@@ -5,36 +5,71 @@
     <title>DW card game</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <style media="screen">
-    *{
-      box-sizing: border-box;
+    html, body {
+      height:100%;
+      background-color: darkred;
     }
-    body{
-      background-color: #800000;
+    .game-board {
+        height: calc(100%);
     }
-    .container {
-      width: 100%;
-      height: 100%;
+    .half {
+      height: 50%;
+    }
+
+    /* each quater of the play bord */
+    .opponent-area {
+      /* background: #00f; */
+      border: 3px solid #00f;
+    }
+    .opponent-area > .card-hand{
+      /* background: skyblue; */
+      border: 1px solid powderblue;
+    }
+    .opponent-area > .card-play{
+      /* background: darkblue; */
+      border: 1px solid skyblue;
+    }
+
+    .player-area {
+      /* background: #f00; */
+      border: 3px solid #f00;
+    }
+
+    .player-area > .card-play{
+      /* background: darkred; */
+      border: 1px solid pink;
+    }
+
+    .player-area > .card-hand{
+      /* background: pink; */
+      border: 1px solid pink;
     }
 
     .score-borad {
       background-color: #C99789;
-      width:20%;
-      height:950px;
+      width:15%;
+      height:100%;
       float:left;
     }
 
     .game-board{
-      width:80%;
-      float:left;
+      width:85%;
+      float:right;
     }
 
-    .flip-card{
+    /* .flip-card{
       background: no-repeat center;
       background-size: 100% 100%;
+    } */
+
+    .card-line{
+      height:50%;
+      text-align: center;
     }
+
     .card {
-      float: left;
-      margin:10px;
+      display: inline-block;
+      margin-left:10px;
       height:200px;
       width:150px;
       background-color: #ccc;
@@ -46,7 +81,12 @@
       box-shadow: 5px 5px 50px #400000;
     }
 
-    .opponent-area {
+    .play-area > .card {
+      /* float:inherit; */
+      /* border: 3px solid #0f0; */
+    }
+
+    /* .opponent-area {
       position: absolute;
       top:0;
       width:100%;
@@ -74,29 +114,25 @@
     .player-area .hand-area{
         position: absolute;
         bottom: 0;
-    }
+    } */
 
-    .play-area .deck{
+    /* .play-area .deck{
       position: absolute;
       right: 0;
-    }
+    } */
 
-    .white-faction{
+    .player-faction{
       background-image:url('img/faction-white.png');
     }
 
-    .boy-faction{
+    .opponent-faction{
       background-image:url('img/faction-boy.png');
     }
 
-    .nature-faction{
-      background-image:url('img/faction-nature.png');
+    .opponent-faction{
+      background-image:url('img/nature.png');
     }
 
-    .card p {
-      font-size: 48px;
-      color:blue;
-    }
     .card:hover {
       cursor: pointer;
       box-shadow: 0 0 40px #fff;
@@ -105,11 +141,12 @@
     hr.double-line{
     	border-top: 1px solid #800000;
     }
+
   </style>
 
   </head>
   <body>
-    <div class="conatainer">
+    <!-- <div class="conatainer"> -->
       <div class="score-borad">
         <div class="opponent-score">
           <h1>SCORE:<span>0</span></h1>
@@ -121,10 +158,43 @@
           <h1>SCORE:<span>0</span></h1>
         </div>
       </div>
-      <div class="game-board">
+
+    <div class="game-board">
+      <div class="half opponent-area">
+        <div class="card-line card-hand">
+          <div class="card opponent-faction close"></div>
+          <div class="card opponent-faction close"></div>
+          <div class="card opponent-faction close"></div>
+          <div class="card opponent-faction close"></div>
+        </div>
+        <div class="card-line card-play">
+          <div class="card opponent-faction open"></div>
+        </div>
+          <div class="card-deck">
+          </div>
+        <div class="card-line card-play"></div>
+          <div class="card-list">
+          </div>
+          <div class="card-deck">
+          </div>
+      </div>
+      <div class="half player-area">
+        <div class="card-line card-play">
+          <div class="card player-faction open"></div>
+        </div>
+        <div class="card-line card-hand">
+          <div class="card player-faction open"></div>
+          <div class="card player-faction open"></div>
+          <div class="card player-faction open"></div>
+          <div class="card player-faction open"></div>
+        </div>
+      </div>
+    </div>
+
+      <!-- <div class="game-board">
         <div class="opponent-area">
           <div class="hand-area">
-            <div class="card opponent-card boy-faction unmatched"></div>
+            <div class="card opponent-card boy-faction close"></div>
             <div class="card opponent-card boy-faction unmatched"></div>
             <div class="card opponent-card boy-faction unmatched"></div>
             <div class="card opponent-card boy-faction unmatched"></div>
@@ -132,9 +202,6 @@
           </div>
           <div class="play-area"></div>
           <div class="deck">
-            <!-- <div class="card boy-faction"></div> -->
-            <!-- <div class="card boy-faction"></div> -->
-            <!-- <div class="card boy-faction"></div> -->
           </div>
         </div>
         <div class="player-area">
@@ -147,25 +214,32 @@
             <div class="card player-card white-faction unmatched"></div>
           </div>
           <div class="deck">
-            <!-- <div class="card white-faction"></div> -->
-            <!-- <div class="card white-faction"></div> -->
-            <!-- <div class="card white-faction"></div> -->
           </div>
         </div>
-      </div>
+      </div> -->
 
-    </div>
+    <!-- </div> -->
+
   </body>
   <script type="text/javascript">
     var app = {
+      opponent: {
+        hand: [1,2,3,4],
+        play: [5]
+      },
       opponentHandCards : [1,2,3,4,5],
       opponentPlayCards : [],
       playerHandCards : [1,2,3,4,5],
       playerPlayCards : [],
-      // cards: [1,1,2,2,3,3,4,4],
       init: function () {
+          // app.shuffle(app.opponent['hand']);
+          // console.log(app.opponent.hand);
           app.shuffle(app.opponentHandCards);
+          app.assignCard('opponent',app.opponentHandCards);
+
           app.shuffle(app.playerHandCards);
+          app.assignCard('player',app.playerHandCards);
+
       },
       shuffle: function(cards) {
         var random = 0;
@@ -176,28 +250,41 @@
           cards[i] = cards[random];
           cards[random] = temp;
         }
-        app.assignCard('opponent-card',app.opponentHandCards);
-        app.assignCard('player-card',app.playerHandCards);
       },
-      assignCard: function(className, cards){
-        $('.'+className).each(function(index){
-          $(this).attr('data-card-value',cards[index]);
-        });
-        app.clickHandlers();
+      assignCard: (owner, cards) => {
+        $('.' + owner + '-area .card').each(function(index){
+            $(this).attr('data-card-value', cards[index])
+
+            if(owner === 'player' || $(this).closest('.card-line').hasClass('card-play')){
+              app.setCardImage($(this))
+            }
+        })
+
+        app.moveCardHandlers();
       },
-      flipCard: function(){
+      flipCard: () => {
 
       },
-      clickHandlers: function(){
+      moveCardHandlers: function(){
         $('.card').on('click',function(){
-          console.log($(this).data('cardValue'));
-          var imgUrl = 'img/'+$(this).data('cardValue')+'.png';
-          // $(this).addClass('flip-card');
-          $(this).css({"background":"url("+imgUrl+")",
-                        "background-size":"100% 100%",
-                      }).addClass('selected');
-          // app.checkMatch();
-        });
+          
+        })
+      },
+      setCardImage: (card) => {
+        var imgUrl = 'img/'+card.data('cardValue')+'.png';
+        card.css({"background": "url(" + imgUrl + ")",
+                  "background-size": "100% 100%",
+                }).addClass('selected');
+      },
+      clickHandlers: function(){
+        // $('.card').on('click',function(){
+        //   console.log($(this).data('cardValue'));
+        //   var imgUrl = 'img/'+$(this).data('cardValue')+'.png';
+        //   // $(this).addClass('flip-card');
+        //   $(this).css({"background":"url("+imgUrl+")",
+        //                 "background-size":"100% 100%",
+        //               }).addClass('selected');
+        // });
       },
       checkMatch: function() {
         if($('.selected').length === 2){
