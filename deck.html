@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        html, body {
+            height:100%;
+            background-color: black;
+        }
+        .container {
+            background-color:lightseagreen;
+            height:100%;
+            display: flex;
+            flex-direction: row;
+            align-items:stretch;
+            
+        }
+
+        .deck-list{
+            flex-grow: 1;
+            flex-basis: 100px;
+            background-color: cadetblue;
+        }
+        .builder-board{
+            display: flex;
+            flex-grow: 3;
+            flex-direction: row;
+            background-color: tomato;
+        }
+
+        .card-info{
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            background-color: powderblue;
+            align-items: center;
+        }
+
+        .card {
+            /* display: inline-block; */
+            margin-left:10px;
+            height:200px;
+            width:150px;
+            background-color: #ccc;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 5px 5px 50px #400000;
+        }
+
+        /* faction cover image */
+        .white-faction{
+        background-image:url('img/faction-white.png');
+        }
+        .nature-faction {
+        background-image:url('img/nature.png');
+        }
+
+        .boy-faction{
+        background-image:url('img/faction-boy.png');
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- right side : 덱 리스트 영역 -->
+        <div class="area deck-list">
+            <button class="create-deck">New Deck</button>
+        </div>
+
+        <!-- center content : 카드 빌딩 영역 -->
+        <div class="area builder-board">
+            <!-- <div class="card-area"> -->
+                <div class="card-item card"></div>
+                <div class="card-item card"></div>
+                <!-- <card></card> -->
+            <!-- </div> -->
+        </div>
+        <!-- left side: 카드 상세 정보 영역 -->
+        <div class="area card-info">
+            <div class="info-item card"></div>
+            <div class="info-item desc">testtest data blah bal</div>
+            
+        </div>
+    </div>
+</body>
+</html>
