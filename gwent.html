@@ -72,14 +72,61 @@
       margin-left:10px;
       height:200px;
       width:150px;
-      background-color: #ccc;
+      background-color: #fff0;
       background-position: center center;
       background-repeat: no-repeat;
       background-size: 100% 100%;
       text-align: center;
       border-radius: 5px;
       box-shadow: 5px 5px 50px #400000;
+      position: relative;
+      border-width: 5px;
+      border-color: #fff0;
+      border-style: solid;
     }
+    
+    .card.tier-gold {
+      border-style: solid;
+      border-color:#daa520;
+    }
+    .card.tier-silver {
+      border-style: solid;
+      border-color:#c0c0c0;
+    }
+    .card.tier-bronze {
+      border-style: solid;
+      border-color:#cd7f32;
+    }
+
+    .card .point {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 25pt;
+      color: #f5a542;
+      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+      background-color: #000a;
+      border-radius: 20px;
+      width: 40px;
+      height: 40px;
+      margin-left: 5px;
+      margin-top: 5px;
+      padding-top: 2px;
+      padding-left: 1px;
+      padding-right: 1px;
+    }
+
+    .card .desc {
+      position: absolute;
+      background: #000000aa;
+      color: white;
+      padding: 10px;
+      width: 220px;
+      right: -250px;
+      top: -5px;
+      z-index: 999;
+    }
+
 
     .play-area > .card {
       /* float:inherit; */
@@ -162,13 +209,13 @@
     <div class="game-board">
       <div class="half opponent-area">
         <div class="card-line card-hand">
-          <div class="card opponent-faction close"></div>
-          <div class="card opponent-faction close"></div>
-          <div class="card opponent-faction close"></div>
-          <div class="card opponent-faction close"></div>
+          <div class="card opponent-faction close"><div class="point"></div><div class="desc"></div></div>
+          <div class="card opponent-faction close"><div class="point"></div><div class="desc"></div></div>
+          <div class="card opponent-faction close"><div class="point"></div><div class="desc"></div></div>
+          <div class="card opponent-faction close"><div class="point"></div><div class="desc"></div></div>
         </div>
         <div class="card-line card-play">
-          <div class="card opponent-faction open"></div>
+          <div class="card opponent-faction open"><div class="point"></div><div class="desc"></div></div>
         </div>
           <div class="card-deck">
           </div>
@@ -180,13 +227,13 @@
       </div>
       <div class="half player-area">
         <div class="card-line card-play">
-          <div class="card player-faction open"></div>
+          <div class="card player-faction open"><div class="point"></div><div class="desc"></div></div>
         </div>
         <div class="card-line card-hand">
-          <div class="card player-faction open"></div>
-          <div class="card player-faction open"></div>
-          <div class="card player-faction open"></div>
-          <div class="card player-faction open"></div>
+          <div class="card player-faction open"><div class="point"></div><div class="desc"></div></div>
+          <div class="card player-faction open"><div class="point"></div><div class="desc"></div></div>
+          <div class="card player-faction open"><div class="point"></div><div class="desc"></div></div>
+          <div class="card player-faction open"><div class="point"></div><div class="desc"></div></div>
         </div>
       </div>
     </div>
@@ -222,6 +269,40 @@
 
   </body>
   <script type="text/javascript">
+  var cardInfoList = {};
+  var addCardInfo = function(id, point, tier, name, desc) {
+    cardInfoList[id] = {id: id, point: point, tier:tier, name:name, desc:desc};
+  };
+  addCardInfo(1, 3, 'gold', '다이나', '마을 최고의 샤먼. 화이트의 엄마');
+  addCardInfo(2, 3, 'gold', '화이트', '주인공');
+  addCardInfo(3, 2, 'silver', '소년', '어리다');
+  addCardInfo(4, 2, 'silver', '3번', '설명');
+  addCardInfo(5, 1, 'bronze', '여우', '파이어폭스');
+
+  var DWCard = {
+    id: 0,
+    point: 0,
+    tier: 'bronze',
+    name: '',
+    desc: ''
+  };
+    $(document).ready(function() {
+      $('.card .point').hide();
+      $('.card .desc').hide();
+      $('.card').hover(function() {
+        if ($(this).hasClass('close')) {
+          return;
+        }
+        var idx = $(this).data('cardValue');
+        console.log(cardInfoList[idx]);
+        var cardInfo = cardInfoList[idx];
+        var descdiv = $(this).children('.desc');
+        descdiv.html('<strong>'+cardInfo.name + '</strong><br>' + cardInfo.desc + '<br>포인트 : ' + cardInfo.point);
+        $(this).children('.desc').show();
+      }, function(){
+        $(this).children('.desc').hide();
+      });
+    }); 
     var app = {
       opponent: {
         hand: [1,2,3,4],
@@ -268,13 +349,27 @@
       moveCardHandlers: function(){
         $('.card').on('click',function(){
           
-        })
+        });
       },
       setCardImage: (card) => {
-        var imgUrl = 'img/'+card.data('cardValue')+'.png';
+        var cardValue = card.data('cardValue');
+        var imgUrl = 'img/'+cardValue+'.png';
         card.css({"background": "url(" + imgUrl + ")",
                   "background-size": "100% 100%",
                 }).addClass('selected');
+          
+        var cardInfo = cardInfoList[cardValue];
+        var pointLabel = card.children('.point');
+        pointLabel.text(cardInfo.point);
+        pointLabel.show();
+        if (cardInfo.tier == 'gold') {
+          card.addClass('tier-gold');
+        }else if (cardInfo.tier == 'silver') {
+          card.addClass('tier-silver');
+        }else {
+          card.addClass('tier-bronze');
+        }
+        
       },
       clickHandlers: function(){
         // $('.card').on('click',function(){
@@ -314,7 +409,9 @@
         }
       }
     }
-    app.init();
 
+    $(document).ready(function() {
+      app.init();
+    });
   </script>
 </html>
