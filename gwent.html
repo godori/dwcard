@@ -9,6 +9,30 @@
       height:100%;
       background-color: darkred;
     }
+    .select-faction-layer{
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      position:absolute;
+      height:100%;
+      width:100%;
+      background-color:black;
+      /* opacity: 0.7; */
+    }
+    .select-faction-layer header {
+      color: white;
+      text-align: center;
+      font-size: 3em;
+      margin: 50px 0px 50px 0px;
+    }
+    
+    .select-faction-layer .desc {
+      color: white;
+      text-align: center;
+      font-size: 2.6em;
+    }
+
+
     .game-board {
         height: calc(100%);
     }
@@ -56,11 +80,6 @@
       width:85%;
       float:right;
     }
-
-    /* .flip-card{
-      background: no-repeat center;
-      background-size: 100% 100%;
-    } */
 
     .card-line{
       height:50%;
@@ -169,17 +188,26 @@
     } */
 
     .player-faction{
-      background-image:url('img/faction-white.png');
+      background-image:url('img/faction-cover/white-faction.png');
     }
 
     .opponent-faction{
-      background-image:url('img/faction-boy.png');
+      background-image:url('img/faction-cover/boy-faction.png');
     }
 
-    .opponent-faction{
-      background-image:url('img/nature.png');
+
+    /* faction cover */
+    .white-faction{
+      background-image:url('img/faction-cover/white-faction.png');
+    }
+    .nature-faction {
+      background-image:url('img/faction-cover/nature-faction.png');
     }
 
+    .boy-faction{
+      background-image:url('img/faction-cover/boy-faction.png');
+    }
+    /* card */
     .card:hover {
       cursor: pointer;
       box-shadow: 0 0 40px #fff;
@@ -193,6 +221,7 @@
 
   </head>
   <body>
+    
     <!-- <div class="conatainer"> -->
       <div class="score-borad">
         <div class="opponent-score">
@@ -238,36 +267,27 @@
       </div>
     </div>
 
-      <!-- <div class="game-board">
-        <div class="opponent-area">
-          <div class="hand-area">
-            <div class="card opponent-card boy-faction close"></div>
-            <div class="card opponent-card boy-faction unmatched"></div>
-            <div class="card opponent-card boy-faction unmatched"></div>
-            <div class="card opponent-card boy-faction unmatched"></div>
-            <div class="card opponent-card boy-faction unmatched"></div>
-          </div>
-          <div class="play-area"></div>
-          <div class="deck">
-          </div>
-        </div>
-        <div class="player-area">
-          <div class="play-area"></div>
-          <div class="hand-area">
-            <div class="card player-card white-faction unmatched"></div>
-            <div class="card player-card white-faction unmatched"></div>
-            <div class="card player-card white-faction unmatched"></div>
-            <div class="card player-card white-faction unmatched"></div>
-            <div class="card player-card white-faction unmatched"></div>
-          </div>
-          <div class="deck">
-          </div>
-        </div>
-      </div> -->
-
-    <!-- </div> -->
-
   </body>
+  <aside class="select-faction-layer">
+    <header>
+      <h1>SELECT FACTION</h1>
+    </header>
+    <content>
+      <div class="card white-faction" 
+            data-faction-value="White Faction"
+            onmouseover="game.showFactionDesc(this);"></div>
+      <div class="card boy-faction"
+            data-faction-value="Boy faction"
+            onmouseover="game.showFactionDesc(this);"></div>
+      <div class="card nature-faction"
+            data-faction-value="Nature Faction"
+            onmouseover="game.showFactionDesc(this);"></div>
+    </content>
+    <footer>
+      <div class="desc"></div>
+    </footer>
+  </aside>
+
   <script type="text/javascript">
   var cardInfoList = {};
   var addCardInfo = function(id, point, tier, name, desc) {
@@ -296,7 +316,7 @@
         $(this).children('.desc').hide();
       });
     }); 
-    var app = {
+    var game = {
       opponent: {
         hand: [1,2,3,4],
         play: [5]
@@ -305,15 +325,43 @@
       opponentPlayCards : [],
       playerHandCards : [1,2,3,4,5],
       playerPlayCards : [],
+      factionDesc: [
+      `화이트 진영의 카드입니다.
+      샤먼의 능력을 사용하여 동물의 힘을 끌어내 이용할 수 있습니다.`
+      ,`소년 진영의 카드입니다. 
+      삶과 죽음의 경계에 있는 자들과 저주받은 힘을 사용합니다.`
+      ,`자연 진영의 카드입니다.
+      자연 그대로의 강력한 능력을 사용합니다.
+      `],
       init: function () {
-          // app.shuffle(app.opponent['hand']);
-          // console.log(app.opponent.hand);
-          app.shuffle(app.opponentHandCards);
-          app.assignCard('opponent',app.opponentHandCards);
+          // game.shuffle(game.opponent['hand']);
+          // console.log(game.opponent.hand);
 
-          app.shuffle(app.playerHandCards);
-          app.assignCard('player',app.playerHandCards);
+          game.shuffle(game.opponentHandCards);
+          game.assignCard('opponent',game.opponentHandCards);
 
+          game.shuffle(game.playerHandCards);
+          game.assignCard('player',game.playerHandCards);
+
+      },
+      showFactionDesc: (target) => {
+        $(target).hover(()=>{
+           var faction = $(target).data('factionValue')
+           
+           $('.select-faction-layer .desc').text(faction) 
+
+        })
+        $(target).click(() => {
+          console.log('select faction:');
+          
+          game.selectFaction()
+        })
+        
+      },
+      selectFaction : () => {
+         $('.select-faction-layer').on('click', () => {
+           $('.select-faction-layer').fadeOut('fast');
+         });
       },
       shuffle: function(cards) {
         var random = 0;
@@ -330,11 +378,11 @@
             $(this).attr('data-card-value', cards[index])
 
             if(owner === 'player' || $(this).closest('.card-line').hasClass('card-play')){
-              app.setCardImage($(this))
+              game.setCardImage($(this))
             }
         })
 
-        app.moveCardHandlers();
+        game.moveCardHandlers();
       },
       flipCard: () => {
 
@@ -346,7 +394,7 @@
       },
       setCardImage: (card) => {
         var cardValue = card.data('cardValue');
-        var imgUrl = 'img/'+cardValue+'.png';
+        var imgUrl = 'img/card/'+cardValue+'.png';
         card.css({"background": "url(" + imgUrl + ")",
                   "background-size": "100% 100%",
                 }).addClass('selected');
@@ -364,47 +412,37 @@
         }
         
       },
-      clickHandlers: function(){
-        // $('.card').on('click',function(){
-        //   console.log($(this).data('cardValue'));
-        //   var imgUrl = 'img/'+$(this).data('cardValue')+'.png';
-        //   // $(this).addClass('flip-card');
-        //   $(this).css({"background":"url("+imgUrl+")",
-        //                 "background-size":"100% 100%",
-        //               }).addClass('selected');
-        // });
-      },
-      checkMatch: function() {
-        if($('.selected').length === 2){
-          if($('.selected').first().data('cardValue') == $('.selected').last().data('cardValue')){
-            $('.selected').each(function(){
-              $(this).animate({opacity:0}).removeClass('unmatched');
-            });
-            $('.selected').each(function(){
-              $(this).removeClass('selected');
-            });
-            app.checkWin();
-          } else {
-            setTimeout(function(){
-              $('.selected').each(function(){
-                  $(this).html('').removeClass('selected');
-                  $(this).removeAttr('style');
-              })
-            }, 1000);
-          }
+      checkMatch: function() { // no use
+        // if($('.selected').length === 2){
+        //   if($('.selected').first().data('cardValue') == $('.selected').last().data('cardValue')){
+        //     $('.selected').each(function(){
+        //       $(this).animate({opacity:0}).removeClass('unmatched');
+        //     });
+        //     $('.selected').each(function(){
+        //       $(this).removeClass('selected');
+        //     });
+        //     game.checkWin();
+        //   } else {
+        //     setTimeout(function(){
+        //       $('.selected').each(function(){
+        //           $(this).html('').removeClass('selected');
+        //           $(this).removeAttr('style');
+        //       })
+        //     }, 1000);
+        //   }
 
-        }
+        // }
       },
-      checkWin: function() {
-        console.log('checkwin');
-        if($('.unmatched').length === 0){
-          $('.container').html('<h1>YOU WON!</h1>');
-        }
+      checkWin: function() { // no use
+        // console.log('checkwin');
+        // if($('.unmatched').length === 0){
+        //   $('.container').html('<h1>YOU WON!</h1>');
+        // }
       }
     }
 
     $(document).ready(function() {
-      app.init();
+      game.init();
     });
   </script>
 </html>
