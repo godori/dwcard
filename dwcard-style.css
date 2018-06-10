@@ -1,0 +1,211 @@
+html, body {
+      height:100%;
+      background-color: darkred;
+}
+.select-faction-layer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    position:absolute;
+    height:100%;
+    width:100%;
+    background-color:black;
+    /* opacity: 0.7; */
+}
+.select-faction-layer header {
+    color: white;
+    text-align: center;
+    font-size: 3em;
+    margin: 50px 0px 50px 0px;
+}
+
+.select-faction-layer .desc {
+    color: white;
+    text-align: center;
+    font-size: 2.6em;
+}
+
+
+.game-board {
+    height: calc(100%);
+}
+.half {
+    height: 50%;
+}
+
+/* each quater of the play bord */
+.opponent-area {
+    /* background: #00f; */
+    border: 3px solid #00f;
+}
+.opponent-area > .card-hand{
+    /* background: skyblue; */
+    border: 1px solid powderblue;
+}
+.opponent-area > .card-play{
+    /* background: darkblue; */
+    border: 1px solid skyblue;
+}
+
+.player-area {
+    /* background: #f00; */
+    border: 3px solid #f00;
+}
+
+.player-area > .card-play{
+    /* background: darkred; */
+    border: 1px solid pink;
+}
+
+.player-area > .card-hand{
+    /* background: pink; */
+    border: 1px solid pink;
+}
+
+.score-borad {
+    background-color: #C99789;
+    width:15%;
+    height:100%;
+    float:left;
+}
+
+.game-board{
+    width:85%;
+    float:right;
+}
+
+.card-line{
+    height:50%;
+    text-align: center;
+}
+
+.card {
+    display: inline-block;
+    margin-left:10px;
+    height:200px;
+    width:150px;
+    background-color: #fff0;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 5px 5px 50px #400000;
+    position: relative;
+    border-width: 5px;
+    border-color: #fff0;
+    border-style: solid;
+}
+
+.card.tier-gold {
+    border-style: solid;
+    border-color:#daa520;
+}
+.card.tier-silver {
+    border-style: solid;
+    border-color:#c0c0c0;
+}
+.card.tier-bronze {
+    border-style: solid;
+    border-color:#cd7f32;
+}
+
+.card .point {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 25pt;
+    color: #f5a542;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    background-color: #000a;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    margin-left: 5px;
+    margin-top: 5px;
+    padding-top: 2px;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.card .desc {
+    position: absolute;
+    background: #000000aa;
+    color: white;
+    padding: 10px;
+    width: 220px;
+    right: -250px;
+    top: -5px;
+    z-index: 999;
+}
+
+
+.play-area > .card {
+    /* float:inherit; */
+    /* border: 3px solid #0f0; */
+}
+
+/* .opponent-area {
+    position: absolute;
+    top:0;
+    width:100%;
+    height:500px;
+    float:left;
+}
+.opponent-area .deck {
+    position: absolute;
+    right:0;
+    float:right;
+}
+
+.opponent-area .cardList{
+
+}
+
+.player-area {
+    position: absolute;
+    bottom:0;
+    width:100%;
+    height:500px;
+    float: left;
+}
+
+.player-area .hand-area{
+    position: absolute;
+    bottom: 0;
+} */
+
+/* .play-area .deck{
+    position: absolute;
+    right: 0;
+} */
+
+.player-faction{
+    background-image:url('img/faction-cover/white-faction.png');
+}
+
+.opponent-faction{
+    background-image:url('img/faction-cover/boy-faction.png');
+}
+
+
+/* faction cover */
+.white-faction{
+    background-image:url('img/faction-cover/white-faction.png');
+}
+.nature-faction {
+    background-image:url('img/faction-cover/nature-faction.png');
+}
+
+.boy-faction{
+    background-image:url('img/faction-cover/boy-faction.png');
+}
+/* card */
+.card:hover {
+    cursor: pointer;
+    box-shadow: 0 0 40px #fff;
+}
+
+hr.double-line{
+    border-top: 1px solid #800000;
+}
