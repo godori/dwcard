@@ -1,0 +1,41 @@
+
+<head>
+<style type="text/css">
+    body{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 2em;
+    }
+    .container > div {
+        flex-grow: 1;
+        color: white;
+        text-align: center;
+        padding:20px;
+        margin: 20px;
+    }
+    #game{
+        background-color: tomato;
+    }
+    .container > div:hover{
+        box-shadow: 0 0 100px gold;
+    }
+    #deck{
+        background-color:darkcyan;
+    }
+    
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="game" onclick="location.href='gwent.html'">Playing Game!</div>
+        <div id="deck" onclick="alert('coming soon..');">Building Deck</div>
+    </div>
+</body>
