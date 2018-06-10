@@ -23,7 +23,6 @@ $(document).ready(function () {
     var cardInfo = cardInfoList[idx];
     var descdiv = $(this).children('.desc');
 
-    
     descdiv.html('<strong>' + cardInfo.name + '</strong><br>' + cardInfo.desc + '<br>포인트 : ' + cardInfo.point);
     $(this).children('.desc').show();
   }, function () {
@@ -31,10 +30,22 @@ $(document).ready(function () {
   });
 
   game.init();
-
 });
 
+_loadJsonData = () => {
+  return new Promise(function (resolve, reject) {
+    var json = $.getJSON('dwcard-data.json', () => {
+    }).done(() => {
+      resolve(json)
+    })
+      .fail(() => {
+        reject('fail to load json')
+      })
+  })
+}
+
 var game = {
+  cardData: [],
   opponent: {
     hand: [1, 2, 3, 4],
     play: [5]
@@ -43,24 +54,25 @@ var game = {
   opponentPlayCards: [],
   playerHandCards: [1, 2, 3, 4, 5],
   playerPlayCards: [],
-  factionDesc: [
-    `화이트 진영의 카드입니다.
-      샤먼의 능력을 사용하여 동물의 힘을 끌어내 이용할 수 있습니다.`
-    , `소년 진영의 카드입니다. 
-      삶과 죽음의 경계에 있는 자들과 저주받은 힘을 사용합니다.`
-    , `자연 진영의 카드입니다.
-      자연 그대로의 강력한 능력을 사용합니다.
-      `],
-  init: function () {
-    // game.shuffle(game.opponent['hand']);
-    // console.log(game.opponent.hand);
+  init: () => {
+    _loadJsonData().then((res) => {
+      console.log('success!');
+      game.cardData = res
+      game.initGame()
+    },
+      (err) => {
+        console.log(err);
+      })
+  },
+  initGame: () => {
+
+    console.log(game.cardData);
 
     game.shuffle(game.opponentHandCards);
     game.assignCard('opponent', game.opponentHandCards);
 
     game.shuffle(game.playerHandCards);
     game.assignCard('player', game.playerHandCards);
-
   },
   showFactionDesc: (target) => {
     $(target).hover(() => {
