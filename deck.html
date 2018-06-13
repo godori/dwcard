@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="dwcard-style.css">
     <style>
         html, body {
             height:100%;
@@ -45,7 +46,7 @@
         }
         .card-area {
             border: 1px solid white;
-            padding :5px;
+            padding : 15px 5px 5px 5px;
         }
         .card-info{
             display: flex;
@@ -58,17 +59,15 @@
         }
 
         .card {
-            display: inline-block; /* 필요시 수정 */
-            margin-left:10px;
-            height:200px;
-            width:150px;
-            background-color: #ccc;
+            /* display: inline-block; */
+            /* margin-left:10px; */
+            /* background-color: #ccc;
             background-position: center center;
             background-repeat: no-repeat;
-            background-size: 100% 100%;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 5px 5px 50px #400000;
+            background-size: 100% 100%; */
+            /* text-align: center; */
+            /* border-radius: 5px; */
+            /* box-shadow: 5px 5px 50px #400000; */
         }
 
         /* faction cover image */
@@ -92,7 +91,6 @@
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
-
 <body>
     <div class="container">
         <!-- right side : 덱 리스트 영역 -->
@@ -159,10 +157,31 @@ $(document).ready(function() {
         }
         return gold.concat(silver.concat(bronze));
     }
+    var generateCardElement = (cardInfo) => {
+        var cardValue = cardInfo.idx;
+        var imgUrl = 'img/card/' + cardValue + '.png';
+        var $card = $('<div class="card-item card"><div class="point"></div></div>');
+        $card.attr('data-cardValue', cardValue);
+        $card.css({
+            "background": "url(" + imgUrl + ")",
+            "background-size": "100% 100%",
+        });
+        var pointLabel = $card.children('.point');
+        pointLabel.text(cardInfo.point);
+        pointLabel.show();
+        if (cardInfo.tier == 'gold') {
+            $card.addClass('tier-gold');
+        } else if (cardInfo.tier == 'silver') {
+            $card.addClass('tier-silver');
+        } else {
+            $card.addClass('tier-bronze');
+        }
+        return $card;
+    };
+
     loadCardData().then((json) => {
         cardData = json[0].data;
         console.log(cardData);
-
         $('.tab-list .btn').click(function(){
             var group = $(this).data('group');
             var data = sortByTier(getCardData(group));
@@ -170,18 +189,23 @@ $(document).ready(function() {
             // console.log(data);
             var $cardArea = $('.builder-board .card-area');
             $cardArea.html('');
-            for (var cardInfo in data) {
-                console.log(cardInfo);
-                // <div class="card-item card"></div>
-                var newCard = $('<div class="card-item card"></div>');
-                $cardArea.append(newCard);
+            for (var key in data) {
+                var $newCard = generateCardElement(data[key]);
+                $cardArea.append($newCard);
             }
         });
         $('.create-deck').click(function() {
             // create new deck.
             // TODO: show 
         });
-
+        $('.builder-board .card-area').on('click', '.card', function() {
+            var $card = $(this);
+            var cardValue = $card.attr('data-cardValue');
+            console.log($card);
+            console.log($card.attr('data-cardValue'));
+            $('.area.card-info .card').replaceWith($card.clone());
+        });
+        $('.tab-list .btn:first').click();
     }).catch((error) => {
         console.error(error);
     });

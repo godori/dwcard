@@ -141,7 +141,6 @@ var game = {
     } else {
       card.addClass('tier-bronze');
     }
-
   },
   checkWin: function () { // no use
     // console.log('checkwin');

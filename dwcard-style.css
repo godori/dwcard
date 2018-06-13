@@ -111,22 +111,36 @@ html, body {
 }
 
 .card .point {
+    z-index: 0;
     position: absolute;
     top: 0;
     left: 0;
-    font-size: 25pt;
+    font-size: 22pt;
     color: #f5a542;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    background-color: #000a;
+    /* background-color: #000a; */
     border-radius: 20px;
     width: 40px;
     height: 40px;
-    margin-left: 5px;
+    margin-left: 3px;
     margin-top: 5px;
     padding-top: 2px;
     padding-left: 1px;
     padding-right: 1px;
 }
+.card .point:before {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    display: block;
+    width: 40px;
+    height: 40px;
+    top: -2px;
+    left: 1px;
+    background-color: #000a;
+    border-radius: 20px;
+    /* box-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+  }
 
 .card .desc {
     position: absolute;
