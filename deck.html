@@ -13,13 +13,14 @@
             display: flex;
             flex-direction: row;
             align-items:stretch;
-            
+            min-width: 960px;
         }
 
         .deck-list{
-            flex-grow: 1;
+            /* flex-grow: 1; */
             flex-basis: 100px;
             background-color: #1e3f40;
+            min-width: 160px;
         }
         .builder-board{
             display: flex;
@@ -27,6 +28,7 @@
             flex-direction: column;
             background-color: #6b281c;
             padding: 10px;
+            padding-top: 20px;
         }
 
         .builder-board .tab-list {
@@ -47,14 +49,16 @@
         }
         .card-info{
             display: flex;
-            flex-grow: 1;
+            /* flex-grow: 1; */
             flex-direction: column;
             background-color: #05636f;
             align-items: center;
+            min-width: 320px;
+            padding-top: 20px;
         }
 
         .card {
-            /* display: inline-block; */
+            display: inline-block; /* 필요시 수정 */
             margin-left:10px;
             height:200px;
             width:150px;
@@ -109,9 +113,7 @@
                 <div class="btn" data-group="nature">자연</div>
             </div>
             <div class="card-area">
-                <div class="card-item card"></div>
-                <div class="card-item card"></div>
-                <!-- <card></card> -->
+                <!-- <div class="card-item card"></div> -->
             </div>
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
@@ -123,9 +125,65 @@
     </div>
 <script>
 $(document).ready(function() {
-    $('.create-deck').click(function() {
-        // create new deck.
-        // TODO: show 
+    var cardData = [];
+    var loadCardData = () => {
+        return new Promise((resolve, reject) => {
+            $.getJSON('./dwcard-data.json').done((json) => {
+                resolve(json);
+            }).fail((jqxhr, textStatus, error) => {
+                var err = textStatus + ", " + error;
+                reject(err);
+            });
+        });
+    };
+    var getCardData = (group) => {
+        var data = [];
+        for (var i = 0; i < cardData.length; i++) {
+            if (cardData[i].group != group)
+                continue;
+            data.push(cardData[i]);
+        }
+        return data;
+    };
+    var sortByTier = (cards) => {
+        var gold = [];
+        var silver = [];
+        var bronze = [];
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].tier == 'bronze')
+                bronze.push(cards[i]);
+            else if (cards[i].tier == 'silver')
+                silver.push(cards[i]);
+            else if (cards[i].tier == 'gold')
+                gold.push(cards[i]);
+        }
+        return gold.concat(silver.concat(bronze));
+    }
+    loadCardData().then((json) => {
+        cardData = json[0].data;
+        console.log(cardData);
+
+        $('.tab-list .btn').click(function(){
+            var group = $(this).data('group');
+            var data = sortByTier(getCardData(group));
+            console.log(group);
+            // console.log(data);
+            var $cardArea = $('.builder-board .card-area');
+            $cardArea.html('');
+            for (var cardInfo in data) {
+                console.log(cardInfo);
+                // <div class="card-item card"></div>
+                var newCard = $('<div class="card-item card"></div>');
+                $cardArea.append(newCard);
+            }
+        });
+        $('.create-deck').click(function() {
+            // create new deck.
+            // TODO: show 
+        });
+
+    }).catch((error) => {
+        console.error(error);
     });
 });
 </script>

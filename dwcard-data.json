@@ -11,5 +11,25 @@
     "1" : {
         "idx": "0",
         "name": "boy"
-    }
+    },
+    "_comment": "data: 카드 정보 리스트. idx: 파일 번호(unique), name: 카드 이름, group: 카드 소속(white, boy, nature), tier: 카드 등급",
+    "data": [
+        {"idx": 1,"name": "castle", "group": "white", "tier":"gold" },
+        {"idx": 2,"name": "altar", "group": "boy", "tier":"silver" },
+        {"idx": 3,"name": "foxes", "group": "nature", "tier":"bronze" },
+        {"idx": 4,"name": "boy", "group": "boy", "tier":"gold" },
+        {"idx": 5,"name": "girl", "group": "white", "tier":"silver" },
+        {"idx": 6,"name": "princess", "group": "white", "tier":"bronze" },
+        {"idx": 7,"name": "cats", "group": "nature", "tier":"bronze" },
+        {"idx": 8,"name": "villagechief", "group": "white", "tier":"gold" },
+        {"idx": 9,"name": "white", "group": "white", "tier":"silver" },
+        {"idx": 10,"name": "diana", "group": "white", "tier":"bronze" },
+        {"idx": 11,"name": "nymph", "group": "nature", "tier":"gold" },
+        {"idx": 12,"name": "fox", "group": "nature", "tier":"silver" },
+        {"idx": 13,"name": "boy", "group": "nature", "tier":"gold" },
+        {"idx": 14,"name": "aurora", "group": "nature", "tier":"bronze" },
+        {"idx": 15,"name": "pillar", "group": "nature", "tier":"silver" },
+        {"idx": 16,"name": "desert", "group": "nature", "tier":"bronze" },
+        {"idx": 17,"name": "bridge", "group": "nature", "tier":"silver" }
+    ]
 }]
