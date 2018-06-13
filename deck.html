@@ -57,7 +57,12 @@
             min-width: 320px;
             padding-top: 20px;
         }
-
+        .card-info .card {
+            background-color: black;
+        }
+        .card-info .desc {
+            margin-top: 0px;
+        }
         .card {
             /* display: inline-block; */
             /* margin-left:10px; */
@@ -117,7 +122,9 @@
         <!-- left side: 카드 상세 정보 영역 -->
         <div class="area card-info">
             <div class="info-item card"></div>
-            <div class="info-item desc">testtest data blah bal</div>
+            <div class="info-item desc">
+                <h3 class="name">?</h3>
+            </div>
             
         </div>
     </div>
@@ -201,9 +208,9 @@ $(document).ready(function() {
         $('.builder-board .card-area').on('click', '.card', function() {
             var $card = $(this);
             var cardValue = $card.attr('data-cardValue');
-            console.log($card);
-            console.log($card.attr('data-cardValue'));
+            console.log(cardData[cardValue]);
             $('.area.card-info .card').replaceWith($card.clone());
+            $('.area.card-info .desc .name').text(cardData[cardValue-1].name);
         });
         $('.tab-list .btn:first').click();
     }).catch((error) => {
