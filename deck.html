@@ -19,20 +19,37 @@
         .deck-list{
             flex-grow: 1;
             flex-basis: 100px;
-            background-color: cadetblue;
+            background-color: #1e3f40;
         }
         .builder-board{
             display: flex;
             flex-grow: 3;
-            flex-direction: row;
-            background-color: tomato;
+            flex-direction: column;
+            background-color: #6b281c;
+            padding: 10px;
         }
 
+        .builder-board .tab-list {
+            margin-bottom: 5px;
+        }
+        .builder-board .tab-list .btn {
+            display: inline;
+            color:white;
+            padding:5px;
+            cursor: pointer;
+            border:1px solid;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .card-area {
+            border: 1px solid white;
+            padding :5px;
+        }
         .card-info{
             display: flex;
             flex-grow: 1;
             flex-direction: column;
-            background-color: powderblue;
+            background-color: #05636f;
             align-items: center;
         }
 
@@ -61,24 +78,41 @@
         .boy-faction{
         background-image:url('img/faction-boy.png');
         }
-
+        
+        ul#userDeckList {
+            list-style-type: none;
+        }
+        ul#userDeckList li {
+            margin-bottom: 12px;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
     <div class="container">
         <!-- right side : 덱 리스트 영역 -->
         <div class="area deck-list">
-            <button class="create-deck">New Deck</button>
+            <ul id="userDeckList">
+                <li><button class="create-deck">New Deck</button></li>
+                <li><button>1번 덱</button></li>
+                <li><button>2번 덱</button></li>
+                <li><button>3번 덱</button></li>
+            </ul>
         </div>
 
         <!-- center content : 카드 빌딩 영역 -->
         <div class="area builder-board">
-            <!-- <div class="card-area"> -->
+            <div class="tab-list">
+                <div class="btn" data-group="white">화이트</div>
+                <div class="btn" data-group="boy">소년</div>
+                <div class="btn" data-group="nature">자연</div>
+            </div>
+            <div class="card-area">
                 <div class="card-item card"></div>
                 <div class="card-item card"></div>
                 <!-- <card></card> -->
-            <!-- </div> -->
+            </div>
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
         <div class="area card-info">
@@ -87,5 +121,13 @@
             
         </div>
     </div>
+<script>
+$(document).ready(function() {
+    $('.create-deck').click(function() {
+        // create new deck.
+        // TODO: show 
+    });
+});
+</script>
 </body>
 </html>
