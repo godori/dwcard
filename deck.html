@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="dwcard-style.css">
     <style>
         html, body {
             height:100%;
@@ -13,41 +14,65 @@
             display: flex;
             flex-direction: row;
             align-items:stretch;
-            
+            min-width: 960px;
         }
 
         .deck-list{
-            flex-grow: 1;
+            /* flex-grow: 1; */
             flex-basis: 100px;
-            background-color: cadetblue;
+            background-color: #1e3f40;
+            min-width: 160px;
         }
         .builder-board{
             display: flex;
             flex-grow: 3;
-            flex-direction: row;
-            background-color: tomato;
+            flex-direction: column;
+            background-color: #6b281c;
+            padding: 10px;
+            padding-top: 20px;
         }
 
+        .builder-board .tab-list {
+            margin-bottom: 5px;
+        }
+        .builder-board .tab-list .btn {
+            display: inline;
+            color:white;
+            padding:5px;
+            cursor: pointer;
+            border:1px solid;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .card-area {
+            border: 1px solid white;
+            padding : 15px 5px 5px 5px;
+        }
         .card-info{
             display: flex;
-            flex-grow: 1;
+            /* flex-grow: 1; */
             flex-direction: column;
-            background-color: powderblue;
+            background-color: #05636f;
             align-items: center;
+            min-width: 320px;
+            padding-top: 20px;
         }
-
+        .card-info .card {
+            background-color: black;
+        }
+        .card-info .desc {
+            margin-top: 0px;
+        }
         .card {
             /* display: inline-block; */
-            margin-left:10px;
-            height:200px;
-            width:150px;
-            background-color: #ccc;
+            /* margin-left:10px; */
+            /* background-color: #ccc;
             background-position: center center;
             background-repeat: no-repeat;
-            background-size: 100% 100%;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 5px 5px 50px #400000;
+            background-size: 100% 100%; */
+            /* text-align: center; */
+            /* border-radius: 5px; */
+            /* box-shadow: 5px 5px 50px #400000; */
         }
 
         /* faction cover image */
@@ -61,31 +86,137 @@
         .boy-faction{
         background-image:url('img/faction-boy.png');
         }
-
+        
+        ul#userDeckList {
+            list-style-type: none;
+        }
+        ul#userDeckList li {
+            margin-bottom: 12px;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
-
 <body>
     <div class="container">
         <!-- right side : 덱 리스트 영역 -->
         <div class="area deck-list">
-            <button class="create-deck">New Deck</button>
+            <ul id="userDeckList">
+                <li><button class="create-deck">New Deck</button></li>
+                <li><button>1번 덱</button></li>
+                <li><button>2번 덱</button></li>
+                <li><button>3번 덱</button></li>
+            </ul>
         </div>
 
         <!-- center content : 카드 빌딩 영역 -->
         <div class="area builder-board">
-            <!-- <div class="card-area"> -->
-                <div class="card-item card"></div>
-                <div class="card-item card"></div>
-                <!-- <card></card> -->
-            <!-- </div> -->
+            <div class="tab-list">
+                <div class="btn" data-group="white">화이트</div>
+                <div class="btn" data-group="boy">소년</div>
+                <div class="btn" data-group="nature">자연</div>
+            </div>
+            <div class="card-area">
+                <!-- <div class="card-item card"></div> -->
+            </div>
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
         <div class="area card-info">
             <div class="info-item card"></div>
-            <div class="info-item desc">testtest data blah bal</div>
+            <div class="info-item desc">
+                <h3 class="name">?</h3>
+            </div>
             
         </div>
     </div>
+<script>
+$(document).ready(function() {
+    var cardData = [];
+    var loadCardData = () => {
+        return new Promise((resolve, reject) => {
+            $.getJSON('./dwcard-data.json').done((json) => {
+                resolve(json);
+            }).fail((jqxhr, textStatus, error) => {
+                var err = textStatus + ", " + error;
+                reject(err);
+            });
+        });
+    };
+    var getCardData = (group) => {
+        var data = [];
+        for (var i = 0; i < cardData.length; i++) {
+            if (cardData[i].group != group)
+                continue;
+            data.push(cardData[i]);
+        }
+        return data;
+    };
+    var sortByTier = (cards) => {
+        var gold = [];
+        var silver = [];
+        var bronze = [];
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].tier == 'bronze')
+                bronze.push(cards[i]);
+            else if (cards[i].tier == 'silver')
+                silver.push(cards[i]);
+            else if (cards[i].tier == 'gold')
+                gold.push(cards[i]);
+        }
+        return gold.concat(silver.concat(bronze));
+    }
+    var generateCardElement = (cardInfo) => {
+        var cardValue = cardInfo.idx;
+        var imgUrl = 'img/card/' + cardValue + '.png';
+        var $card = $('<div class="card-item card"><div class="point"></div></div>');
+        $card.attr('data-cardValue', cardValue);
+        $card.css({
+            "background": "url(" + imgUrl + ")",
+            "background-size": "100% 100%",
+        });
+        var pointLabel = $card.children('.point');
+        pointLabel.text(cardInfo.point);
+        pointLabel.show();
+        if (cardInfo.tier == 'gold') {
+            $card.addClass('tier-gold');
+        } else if (cardInfo.tier == 'silver') {
+            $card.addClass('tier-silver');
+        } else {
+            $card.addClass('tier-bronze');
+        }
+        return $card;
+    };
+
+    loadCardData().then((json) => {
+        cardData = json[0].data;
+        console.log(cardData);
+        $('.tab-list .btn').click(function(){
+            var group = $(this).data('group');
+            var data = sortByTier(getCardData(group));
+            console.log(group);
+            // console.log(data);
+            var $cardArea = $('.builder-board .card-area');
+            $cardArea.html('');
+            for (var key in data) {
+                var $newCard = generateCardElement(data[key]);
+                $cardArea.append($newCard);
+            }
+        });
+        $('.create-deck').click(function() {
+            // create new deck.
+            // TODO: show 
+        });
+        $('.builder-board .card-area').on('click', '.card', function() {
+            var $card = $(this);
+            var cardValue = $card.attr('data-cardValue');
+            console.log(cardData[cardValue]);
+            $('.area.card-info .card').replaceWith($card.clone());
+            $('.area.card-info .desc .name').text(cardData[cardValue-1].name);
+        });
+        $('.tab-list .btn:first').click();
+    }).catch((error) => {
+        console.error(error);
+    });
+});
+</script>
 </body>
 </html>
