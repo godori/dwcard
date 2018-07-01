@@ -194,26 +194,18 @@ html, body {
     right: 0;
 } */
 
-.player-faction{
-    background-image:url('img/faction-cover/white-faction.png');
-}
-
-.opponent-faction{
-    background-image:url('img/faction-cover/boy-faction.png');
-}
-
 
 /* faction cover */
 .white-faction{
-    background-image:url('img/faction-cover/white-faction.png');
+    background-image:url('img/faction-cover/min/white-faction.png');
 }
 .nature-faction {
-    background-image:url('img/faction-cover/nature-faction.png');
+    background-image:url('img/faction-cover/min/nature-faction.png');
+}
+.boy-faction{
+    background-image:url('img/faction-cover/min/boy-faction.png');
 }
 
-.boy-faction{
-    background-image:url('img/faction-cover/boy-faction.png');
-}
 /* card */
 .card:hover {
     cursor: pointer;

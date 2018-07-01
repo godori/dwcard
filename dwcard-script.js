@@ -50,23 +50,25 @@ var game = {
     hand: [1, 2, 3, 4],
     play: [5]
   },
+  factionList : ['white','boy','nature'],
   opponentHandCards: [1, 2, 3, 4, 5],
   opponentPlayCards: [],
   playerHandCards: [1, 2, 3, 4, 5],
   playerPlayCards: [],
   init: () => {
     _loadJsonData().then((res) => {
-      console.log('success!');
+      console.log('card load success!');
       game.cardData = res
       game.initGame()
     },
       (err) => {
-        console.log(err);
+        console.log('card load error :'+err);
       })
   },
   initGame: () => {
-
     console.log(game.cardData);
+    
+    game.faction.init()
 
     game.shuffle(game.opponentHandCards);
     game.assignCard('opponent', game.opponentHandCards);
@@ -74,6 +76,24 @@ var game = {
     game.shuffle(game.playerHandCards);
     game.assignCard('player', game.playerHandCards);
   },
+  faction : {
+    init : () => {
+      game.faction.setOpponent()
+      game.faction.setPlayer()
+    },
+    setOpponent: () => {
+      var randNum = Math.round(Math.random() * 2);
+      var imgUrl = 'img/faction-cover/min/'+game.factionList[randNum]+'-faction.png';
+      $('#opponent .card-hand .card').css({
+                                  "background": "url(" + imgUrl + ")",
+                                  "background-size": "100% 100%"
+                                })
+      
+    },
+    setPlayer: () => {
+      
+    }
+  }, 
   showFactionDesc: (target) => {
     $(target).hover(() => {
       var faction = $(target).data('factionValue')
@@ -124,7 +144,7 @@ var game = {
   },
   setCardImage: (card) => {
     var cardValue = card.data('cardValue');
-    var imgUrl = 'img/card/' + cardValue + '.png';
+    var imgUrl = 'img/card/min/' + cardValue + '.png';
     card.css({
       "background": "url(" + imgUrl + ")",
       "background-size": "100% 100%",
