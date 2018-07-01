@@ -63,28 +63,25 @@
         .card-info .desc {
             margin-top: 0px;
         }
-        .card {
-            /* display: inline-block; */
-            /* margin-left:10px; */
-            /* background-color: #ccc;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: 100% 100%; */
-            /* text-align: center; */
-            /* border-radius: 5px; */
-            /* box-shadow: 5px 5px 50px #400000; */
+        .card.selected {
+            cursor: pointer;
+            box-shadow: 0 0 4px 6px black;
         }
 
         /* faction cover image */
         .white-faction{
-        background-image:url('img/faction-white.png');
+        background-image: url('img/faction-cover/min/white-faction.png');
         }
         .nature-faction {
-        background-image:url('img/nature.png');
+        background-image: url('img/faction-cover/min/nature-faction.png');
         }
 
         .boy-faction{
-        background-image:url('img/faction-boy.png');
+        background-image: url('img/faction-cover/min/boy-faction.png');
+        }
+
+        .neutral-faction {
+            background-image: url('img/faction-cover/min/neutral-faction.png');
         }
         
         ul#userDeckList {
@@ -118,6 +115,10 @@
             <div class="card-area">
                 <!-- <div class="card-item card"></div> -->
             </div>
+            <div class="bottom">
+                <button id="btnReset">초기화</button>
+                <button id="btnDeckSave">저장</button>
+            </div>
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
         <div class="area card-info">
@@ -125,12 +126,19 @@
             <div class="info-item desc">
                 <h3 class="name">?</h3>
             </div>
-            
+            <div>
+                <button class="btnSelect" data-id="-1" style="display:none;">선택</button>
+            </div>
         </div>
     </div>
 <script>
 $(document).ready(function() {
+    $.ajaxSetup({ cache: false });
     var cardData = [];
+    var selectedCard = [];
+    /**
+     * json에서 전체 카드 데이터 불러오기
+     **/
     var loadCardData = () => {
         return new Promise((resolve, reject) => {
             $.getJSON('./dwcard-data.json').done((json) => {
@@ -141,15 +149,23 @@ $(document).ready(function() {
             });
         });
     };
+
+    /**
+     * 진영별 카드 데이터 가져오기
+     **/
     var getCardData = (group) => {
         var data = [];
         for (var i = 0; i < cardData.length; i++) {
-            if (cardData[i].group != group)
+            if (cardData[i].group != group && cardData[i].group != 'neutral')
                 continue;
             data.push(cardData[i]);
         }
         return data;
     };
+
+    /**
+     * 티어 별 정렬
+     **/
     var sortByTier = (cards) => {
         var gold = [];
         var silver = [];
@@ -164,11 +180,15 @@ $(document).ready(function() {
         }
         return gold.concat(silver.concat(bronze));
     }
+
+    /**
+     * 카드 엘리먼트 생성
+     **/
     var generateCardElement = (cardInfo) => {
-        var cardValue = cardInfo.idx;
-        var imgUrl = 'img/card/' + cardValue + '.png';
+        var cardId = cardInfo.idx;
+        var imgUrl = 'img/card/min/' + cardId + '.png';
         var $card = $('<div class="card-item card"><div class="point"></div></div>');
-        $card.attr('data-cardValue', cardValue);
+        $card.attr('data-id', cardId);
         $card.css({
             "background": "url(" + imgUrl + ")",
             "background-size": "100% 100%",
@@ -186,9 +206,50 @@ $(document).ready(function() {
         return $card;
     };
 
+    /**
+     * 카드 선택/해제 버튼 보이기
+     **/
+    var showCardToggleBtn = (id) => {
+        var isExist = false;
+        for (var i = 0; i < selectedCard.length; ++i) {
+            if (selectedCard[i] == id) {
+                isExist = true;
+                break;
+            }
+        }
+        var $btn = $('.card-info .btnSelect');
+        if (isExist)
+            $btn.text('해제');
+        else
+            $btn.text('선택');
+        $btn.attr('data-id', id);
+        $btn.show();
+    };
+
+    var addSelectedCard = (cardId) => {
+        selectedCard.push(cardId);
+        $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
+    };
+    var removeSelectedCard = (cardId) => {
+        // selectedCard.push(cardId);
+        for(var i = 0; i < selectedCard.length; i++) {
+            if (cardId == selectedCard[i]) {
+                selectedCard.splice(i, 1);
+                break;
+            }
+        }
+        $('.card-area .card-item[data-id="'+cardId+'"]').removeClass('selected');
+    };
+    var clearSelectedCard = () => {
+        selectedCard = [];
+    };
     loadCardData().then((json) => {
         cardData = json[0].data;
         console.log(cardData);
+
+        /**
+         * 진영 택 버튼 클릭 
+         **/
         $('.tab-list .btn').click(function(){
             var group = $(this).data('group');
             var data = sortByTier(getCardData(group));
@@ -200,19 +261,74 @@ $(document).ready(function() {
                 var $newCard = generateCardElement(data[key]);
                 $cardArea.append($newCard);
             }
+            clearSelectedCard();
+            $('.card-area .card-item:first').click();
         });
+
+        /**
+         * 새 덱 만들기 클릭
+         **/
         $('.create-deck').click(function() {
             // create new deck.
             // TODO: show 
         });
+
+        /**
+         * 빌더 보드에서 카드 선택
+         **/
         $('.builder-board .card-area').on('click', '.card', function() {
             var $card = $(this);
-            var cardValue = $card.attr('data-cardValue');
-            console.log(cardData[cardValue]);
+            var cardId = $card.attr('data-id');
+            console.log(cardData[cardId]);
             $('.area.card-info .card').replaceWith($card.clone());
-            $('.area.card-info .desc .name').text(cardData[cardValue-1].name);
+            $('.area.card-info .card').removeClass('selected');
+            $('.area.card-info .desc .name').text(cardData[cardId-1].name);
+            showCardToggleBtn(cardId);
         });
         $('.tab-list .btn:first').click();
+
+        /**
+         * 덱 리셋 버튼 클릭
+         **/
+        $('#btnReset').click(function() {
+            $cardItems = $('.card-area .card-item');
+            for (var i = 0; i < $cardItems.length; i++) {
+                $($cardItems[i]).removeClass('selected');
+            }
+            $('.card-info .btnSelect').text('선택');
+        });
+
+        /**
+         * 덱 저장 버튼 클릭
+         **/
+        $('#btnDeckSave').click(function() {
+
+        });
+
+        /**
+         * 선택 버튼 클릭
+         **/
+        $('.card-info .btnSelect').click(function() {
+            var $this = $(this);
+            var cardId = Number($this.attr('data-id'));
+            if (cardId == -1)
+                return;
+
+            var isExist = false;
+            for (var i = 0; i < selectedCard.length; i++) {
+                if (cardId == selectedCard[i]) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (isExist) {
+                removeSelectedCard(cardId);
+                $this.text('선택');
+            }else {
+                addSelectedCard(cardId);
+                $this.text('해제');
+            }
+        });
     }).catch((error) => {
         console.error(error);
     });
