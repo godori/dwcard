@@ -11,7 +11,7 @@
 
 <body>
 
-  <div class="score-borad">
+  <!-- <div class="score-borad">
     <div class="opponent-score">
       <h1>SCORE:
         <span>0</span>
@@ -25,71 +25,101 @@
         <span>0</span>
       </h1>
     </div>
-  </div>
+  </div> -->
 
-  <div class="game-board">
-    <div class="half opponent-area" id="opponent">
-      <div class="card-line card-hand">
-        <div class="card opponent-faction close">
-          <div class="point"></div>
-          <div class="desc"></div>
+  <div class="board">
+    <div class="half-board opponent-board">
+      <side class="leader-area">
+        <div class="leader opponent-leader"></div>
+        <div>OPPONENT LEADER</div>
+      </side>
+      <main class="game-area">
+        <div class="opponent-area" id="opponent">
+          <div class="card-line card-hand">
+            <div class="card opponent-faction close">
+              <div class="point"></div>
+              <div class="desc"></div>
+            </div>
+            <div class="card opponent-faction close">
+              <div class="point"></div>
+              <div class="desc"></div>
+            </div>
+            <div class="card opponent-faction close">
+              <div class="point"></div>
+              <div class="desc"></div>
+            </div>
+            <div class="card opponent-faction close">
+              <div class="point"></div>
+              <div class="desc"></div>
+            </div>
+          </div>
+          <div class="card-line card-play">
+            <div class="card opponent-faction open">
+              <div class="point"></div>
+              <div class="desc"></div>
+            </div>
+          </div>
+          <!-- opponent play line -->
+          <div class="card-line card-play"></div>
+          <div class="card-list">
+          </div>
         </div>
-        <div class="card opponent-faction close">
-          <div class="point"></div>
-          <div class="desc"></div>
+      </main>
+      <side class="deck-area">
+        <div class="deck">
+          <div class="card">DECK</div>
         </div>
-        <div class="card opponent-faction close">
-          <div class="point"></div>
-          <div class="desc"></div>
+        <div class="grave">
+            <div class="card">GRAVE</div>
         </div>
-        <div class="card opponent-faction close">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
+      </side>
       </div>
-      <div class="card-line card-play">
-        <div class="card opponent-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-      </div>
-      <div class="card-deck">
-      </div>
-      <div class="card-line card-play"></div>
-      <div class="card-list">
-      </div>
-      <div class="card-deck">
-      </div>
-    </div>
-    <div class="half player-area">
-      <div class="card-line card-play">
-        <div class="card player-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-      </div>
-      <div class="card-line card-hand">
-        <div class="card player-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-        <div class="card player-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-        <div class="card player-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-        <div class="card player-faction open">
-          <div class="point"></div>
-          <div class="desc"></div>
-        </div>
-      </div>
+    <div class="half-board player-board">
+      <side class="leader-area">
+        <div class="leader player-leader"></div>
+        <div>OPPONENT LEADER</div>
+      </side>
+        <main class="player-area">
+            <div class="card-line card-play">
+              <div class="card player-faction open">
+                <div class="point"></div>
+                <div class="desc"></div>
+              </div>
+            </div>
+            <div class="card-line card-hand">
+              <div class="card player-faction open">
+                <div class="point"></div>
+                <div class="desc"></div>
+              </div>
+              <div class="card player-faction open">
+                <div class="point"></div>
+                <div class="desc"></div>
+              </div>
+              <div class="card player-faction open">
+                <div class="point"></div>
+                <div class="desc"></div>
+              </div>
+              <div class="card player-faction open">
+                <div class="point"></div>
+                <div class="desc">
+                  <img class="desc-img" value="" src="">
+                </div>
+              </div>
+            </div>
+          </main>
+        <side class="deck-area">
+          <div class="deck">
+            <div class="card">DECK</div>
+          </div>
+          <div class="grave">
+              <div class="card">GRAVE </div>
+          </div>
+        </side>
     </div>
   </div>
 
 </body>
+
 <aside class="select-faction-layer">
   <header>
     <h1>SELECT FACTION</h1>

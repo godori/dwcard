@@ -1,15 +1,21 @@
-html, body {
-      height:100%;
-      background-color: darkred;
+* {
+    margin: 0;
+    padding: 0;
 }
+
+html, body {
+    height:100%;
+    background-color: rgb(245, 75, 103);
+}
+
 .select-faction-layer{
-    display:flex;
+    display:none;
     flex-direction: column;
     align-items: center;
     position:absolute;
     height:100%;
     width:100%;
-    background-color:black;
+    background-color:rgb(94, 76, 88);
     /* opacity: 0.7; */
 }
 .select-faction-layer header {
@@ -25,31 +31,59 @@ html, body {
     font-size: 2.6em;
 }
 
-
-.game-board {
-    height: calc(100%);
+.board {
+    display: flex;
+    flex-direction: column;
 }
-.half {
-    height: 50%;
+
+.half-board {
+    display: flex;
+    flex-direction: row;
+    border: 3px solid palegreen;
+    margin: 5px;
+    padding : 5px;
+}
+
+side {
+    flex-basis: 100px;
+    flex-shrink: 1;
+}
+main {
+    flex : 1 0 auto;
+}
+
+.leader-area {
+    flex-basis: 250px;
+    background-color: #daa520;
+    /* padding: 20px; */
+}
+
+.deck-area{
+    /* border: 1px solid aquamarine; */
+    background-color: rgb(81, 104, 155);
+    flex-basis : 200px;
+    /* padding: 20px; */
 }
 
 /* each quater of the play bord */
 .opponent-area {
-    /* background: #00f; */
-    border: 3px solid #00f;
+    background: brown
+    /* border: 3px solid #00f; */
 }
-.opponent-area > .card-hand{
+ .card-hand{
     /* background: skyblue; */
-    border: 1px solid powderblue;
+    border: 1px solid rgb(36, 36, 36);
+    margin: 3px;
 }
-.opponent-area > .card-play{
+.card-play{
     /* background: darkblue; */
-    border: 1px solid skyblue;
+    border: 1px solid rgb(36, 36, 36);
+    margin: 3px;
 }
 
 .player-area {
-    /* background: #f00; */
-    border: 3px solid #f00;
+    background: purple;
+    /* border: 3px solid #f00; */
 }
 
 .player-area > .card-play{
