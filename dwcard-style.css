@@ -77,8 +77,8 @@ html, body {
 .card {
     display: inline-block;
     margin-left:10px;
-    height:200px;
-    width:150px;
+    width: 80px;
+    height: 120px;
     background-color: #fff0;
     background-position: center center;
     background-repeat: no-repeat;
@@ -128,32 +128,33 @@ html, body {
 .card .point {
     z-index: 0;
     position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 22pt;
+    top: 2px;
+    left: 2px;
+    font-size: 20pt;
     color: #f5a542;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     /* background-color: #000a; */
     border-radius: 20px;
-    width: 40px;
-    height: 40px;
-    margin-left: 3px;
-    margin-top: 5px;
-    padding-top: 2px;
-    padding-left: 1px;
-    padding-right: 1px;
+    width: 30px;
+    height: 30px;
+    /* margin-left: 3px; */
+    /* margin-top: 5px; */
+    /* padding-top: 2px; */
+    /* padding-left: 1px; */
+    /* padding-right: 1px; */
 }
 .card .point:before {
     z-index: -1;
     position: absolute;
     content: "";
     display: block;
-    width: 40px;
-    height: 40px;
-    top: -2px;
-    left: 1px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    /* top: -3px; */
+    /* left: 0px; */
     background-color: #000a;
-    border-radius: 20px;
+    /* background-color: #c0c0c0; */
     /* box-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
   }
 
