@@ -69,11 +69,6 @@ html, body {
     float:left;
 }
 
-.game-board{
-    width:85%;
-    float:right;
-}
-
 .card-line{
     height:50%;
     text-align: center;
@@ -173,48 +168,6 @@ html, body {
     z-index: 999;
 }
 
-
-.play-area > .card {
-    /* float:inherit; */
-    /* border: 3px solid #0f0; */
-}
-
-/* .opponent-area {
-    position: absolute;
-    top:0;
-    width:100%;
-    height:500px;
-    float:left;
-}
-.opponent-area .deck {
-    position: absolute;
-    right:0;
-    float:right;
-}
-
-.opponent-area .cardList{
-
-}
-
-.player-area {
-    position: absolute;
-    bottom:0;
-    width:100%;
-    height:500px;
-    float: left;
-}
-
-.player-area .hand-area{
-    position: absolute;
-    bottom: 0;
-} */
-
-/* .play-area .deck{
-    position: absolute;
-    right: 0;
-} */
-
-
 /* faction cover */
 .white-faction { background-image:url('img/faction-cover/min/white-faction.png'); }
 .nature-faction { background-image:url('img/faction-cover/min/nature-faction.png'); }
@@ -222,7 +175,7 @@ html, body {
 .opponent-leader { background-image:url('img/leader/boy_200.png'); }
 .player-leader { background-image:url('img/leader/white_200.png'); }
 
-/* card */
+/* mouse event */
 .card:hover {
     cursor: pointer;
     box-shadow: 0 0 40px #fff;
