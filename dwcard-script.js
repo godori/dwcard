@@ -32,6 +32,29 @@ $(document).ready(function () {
     $(this).children('.desc').hide();
   });
 
+  $('.card').on('mousemove', (e) => {
+    var tooltip = $('.tooltip');
+    
+    var cardImg = e.currentTarget.style.backgroundImage;
+    console.log(cardImg);
+    
+    for (var i=tooltip.length; i--;) {
+      var desc = tooltip[i];
+      desc.style.display = 'block';
+      desc.style.left = e.pageX + 'px';
+      desc.style.top = e.pageY + 'px';
+      var dt = $(desc).find('.detail')[0];
+      dt.style.backgroundImage = cardImg;
+      console.log(dt);
+      
+    }
+  }).on('mouseleave', (e) => {
+    var tooltip = $('.tooltip');
+    for (var i=tooltip.length; i--;) {
+      tooltip[i].style.display = 'none';
+    }
+  })
+
   game.init();
 });
 
