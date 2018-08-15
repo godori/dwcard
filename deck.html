@@ -92,6 +92,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -116,7 +117,8 @@
                 <!-- <div class="card-item card"></div> -->
             </div>
             <div class="bottom">
-                <button id="btnReset">초기화</button>
+                <button id="btnReset">선택 초기화</button><br>
+                <input type="text" value="" name="deckName" placeholder="덱 이름">
                 <button id="btnDeckSave">저장</button>
             </div>
         </div>
@@ -132,10 +134,17 @@
         </div>
     </div>
 <script>
-$(document).ready(function() {
-    $.ajaxSetup({ cache: false });
     var cardData = [];
     var selectedCard = [];
+    const maxSelectedCount = 5;
+    const magicWordForTrim = '-+|+-';
+    var userDeckList = {
+        titleList: [],
+        deckList: {}
+    };
+$(document).ready(function() {
+    $.ajaxSetup({ cache: false });
+    
     /**
      * json에서 전체 카드 데이터 불러오기
      **/
@@ -243,6 +252,29 @@ $(document).ready(function() {
     var clearSelectedCard = () => {
         selectedCard = [];
     };
+
+    var loadUserDeckList = () => {
+        // $.cookie('name');
+        var userDeckTitle = $.cookie('userDeckTitleList');
+        if (typeof userDeckTitle === 'undefined') {
+            return;
+        }
+        console.log('cookie: '+userDeckTitle);
+        var userDeckTitleList = userDeckTitle.split(magicWordForTrim);
+        console.log('userDeckTitleList');
+        for (var i = 0; i < userDeckTitleList.length; i++) {
+            userDeckList.titleList.push(userDeckTitleList[i]);
+            console.log('- ' + userDeckTitleList[i]);
+            // TODO: load deckData.
+        }
+        // MARK: save할 때는 encodeURIComponent를 걸자.
+    };// a-%2B%7C%2B-b-%2B%7C%2B-c-%2B%7C%2B-d!%40%23-%2B%7C%2B-e
+
+    var saveDeck = (name, cardList) => {
+        // $.cookie('name', 'value', { expires: 7, path: '/' });
+        // $.cookie('deckList', 'sadf');
+    };
+
     loadCardData().then((json) => {
         cardData = json[0].data;
         console.log(cardData);
@@ -285,7 +317,13 @@ $(document).ready(function() {
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
             showCardToggleBtn(cardId);
         });
+
         $('.tab-list .btn:first').click();
+
+        /*
+         * 쿠키에서 사용자 덱 리스트 로드
+         */
+        loadUserDeckList();
 
         /**
          * 덱 리셋 버튼 클릭
@@ -302,7 +340,16 @@ $(document).ready(function() {
          * 덱 저장 버튼 클릭
          **/
         $('#btnDeckSave').click(function() {
-
+            var deckName = $('.bottom input[name="deckName"]').val();
+            if (deckName.length <= 0) {
+                alert('덱 이름을 지정해야 합니다.');
+                return;
+            }
+            // TODO: 쿠키에서 가져온 덱 이름중 중복 있는지 체크
+            if (selectedCard.length < maxSelectedCount) {
+                alert('카드를 ' + maxSelectedCount + '장 모두 선택 바랍니다.');
+                return;
+            }
         });
 
         /**
@@ -324,9 +371,12 @@ $(document).ready(function() {
             if (isExist) {
                 removeSelectedCard(cardId);
                 $this.text('선택');
-            }else {
+            }else if (maxSelectedCount > selectedCard.length){
                 addSelectedCard(cardId);
                 $this.text('해제');
+            }else {
+                console.log("선택 오버");
+                alert('총 ' + maxSelectedCount + '장의 카드만 선택할 수 있습니다.');
             }
         });
     }).catch((error) => {
