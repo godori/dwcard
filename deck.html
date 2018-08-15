@@ -144,6 +144,11 @@
             <div>
                 <button class="btnSelect" data-id="-1" style="display:none;">선택</button>
             </div>
+            <hr style="border-color: #fff3;border-width: 1px;width: 100%;">
+            <h3>Selected List</h3>
+            <ul class="selectedList">
+
+            </ul>
         </div>
     </div>
 <script>
@@ -152,6 +157,10 @@
     const maxSelectedCount = 10;
     const magicWordForTrim = '-|-';
     const cookieDeckDataHead = 'deckData_';
+    const cardTierAmount = {
+        'normal' : 3,
+        'gold': 1
+    };
     var userDeckList = {
         titleList: [],
         deckList: {}
@@ -202,17 +211,14 @@ $(document).ready(function() {
      **/
     var sortByTier = (cards) => {
         var gold = [];
-        var silver = [];
-        var bronze = [];
+        var normal = [];
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].tier == 'bronze')
-                bronze.push(cards[i]);
-            else if (cards[i].tier == 'silver')
-                silver.push(cards[i]);
+            if (cards[i].tier == 'normal')
+                normal.push(cards[i]);
             else if (cards[i].tier == 'gold')
                 gold.push(cards[i]);
         }
-        return gold.concat(silver.concat(bronze));
+        return gold.concat(normal);
     }
 
     /**
@@ -221,7 +227,7 @@ $(document).ready(function() {
     var generateCardElement = (cardInfo) => {
         var cardId = cardInfo.idx;
         var imgUrl = 'img/card/min/' + cardId + '.png';
-        var $card = $('<div class="card-item card"><div class="point"></div></div>');
+        var $card = $('<div class="card-item card"><div class="point"></div><div class="amount"></div></div>');
         $card.attr('data-id', cardId);
         $card.css({
             "background": "url(" + imgUrl + ")",
@@ -230,34 +236,15 @@ $(document).ready(function() {
         var pointLabel = $card.children('.point');
         pointLabel.text(cardInfo.point);
         pointLabel.show();
+        var amountLabel = $card.children('.amount');
         if (cardInfo.tier == 'gold') {
             $card.addClass('tier-gold');
-        } else if (cardInfo.tier == 'silver') {
-            $card.addClass('tier-silver');
+            amountLabel.text('');
         } else {
-            $card.addClass('tier-bronze');
+            $card.addClass('tier-normal');
+            amountLabel.text('x3');
         }
         return $card;
-    };
-
-    /**
-     * 카드 선택/해제 버튼 보이기
-     **/
-    var showCardToggleBtn = (id) => {
-        var isExist = false;
-        for (var i = 0; i < selectedCard.length; ++i) {
-            if (selectedCard[i] == id) {
-                isExist = true;
-                break;
-            }
-        }
-        var $btn = $('.card-info .btnSelect');
-        if (isExist)
-            $btn.text('해제');
-        else
-            $btn.text('선택');
-        $btn.attr('data-id', id);
-        $btn.show();
     };
 
     var addSelectedCard = (cardId) => {
@@ -327,11 +314,11 @@ $(document).ready(function() {
     };
 
     loadCardData().then((json) => {
-        cardData = json[0].data;
+        cardData = json[0].cardData;
         console.log(cardData);
 
         /**
-         * 진영 택 버튼 클릭 
+         * 진영 탭 버튼 클릭 
          **/
         $('.tab-list .btn').click(function(){
             var group = $(this).data('group');
@@ -357,16 +344,51 @@ $(document).ready(function() {
         });
 
         /**
-         * 빌더 보드에서 카드 선택
+         * 빌더 보드에서 카드 mouseover
          **/
-        $('.builder-board .card-area').on('click', '.card', function() {
+        $('.builder-board .card-area').on('mouseover', '.card', function() {
             var $card = $(this);
             var cardId = $card.attr('data-id');
             console.log(cardData[cardId]);
             $('.area.card-info .card').replaceWith($card.clone());
             $('.area.card-info .card').removeClass('selected');
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
-            showCardToggleBtn(cardId);
+        });
+
+        /**
+         * 빌더 보드에서 카드 선택
+         **/
+        //  $('.card-info .btnSelect').click(function() {
+         $('.builder-board .card-area').on('click', '.card', function() {
+            var $this = $(this);
+            var cardId = Number($this.attr('data-id'));
+            if (cardId == -1)
+                return;
+
+            var isExist = false;
+            for (var i = 0; i < selectedCard.length; i++) {
+                if (cardId == selectedCard[i]) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (isExist) {
+                removeSelectedCard(cardId);
+            }else if (maxSelectedCount > selectedCard.length){
+                addSelectedCard(cardId);
+            }else {
+                console.log("선택 오버");
+            }
+            // if (isExist) {
+            //     removeSelectedCard(cardId);
+            //     $this.text('선택');
+            // }else if (maxSelectedCount > selectedCard.length){
+            //     addSelectedCard(cardId);
+            //     $this.text('해제');
+            // }else {
+            //     console.log("선택 오버");
+            //     alert('총 ' + maxSelectedCount + '장의 카드만 선택할 수 있습니다.');
+            // }
         });
 
         $('#userDeckList').on('click', 'button.user-deck', function() {
@@ -409,33 +431,7 @@ $(document).ready(function() {
             }
         });
 
-        /**
-         * 선택 버튼 클릭
-         **/
-        $('.card-info .btnSelect').click(function() {
-            var $this = $(this);
-            var cardId = Number($this.attr('data-id'));
-            if (cardId == -1)
-                return;
-
-            var isExist = false;
-            for (var i = 0; i < selectedCard.length; i++) {
-                if (cardId == selectedCard[i]) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (isExist) {
-                removeSelectedCard(cardId);
-                $this.text('선택');
-            }else if (maxSelectedCount > selectedCard.length){
-                addSelectedCard(cardId);
-                $this.text('해제');
-            }else {
-                console.log("선택 오버");
-                alert('총 ' + maxSelectedCount + '장의 카드만 선택할 수 있습니다.');
-            }
-        });
+        
     }).catch((error) => {
         console.error(error);
     });
