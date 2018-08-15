@@ -254,7 +254,7 @@ $(document).ready(function() {
      * 카드 엘리먼트 생성
      **/
     var generateCardElement = (cardInfo) => {
-        var cardId = cardInfo.idx;
+        var cardId = cardInfo.id;
         var imgUrl = 'img/card/min/' + cardId + '.png';
         var $card = $('<div class="card-item card"><div class="point"></div><div class="amount"></div></div>');
         $card.attr('data-id', cardId);
@@ -278,11 +278,8 @@ $(document).ready(function() {
 
     var addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
-        // $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
         var data = cardData[cardId-1];
-        // <li><span>[3] nymph</span><button class="deselect" data-id="1">X</button></li>
         $('ul.selectedList').append('<li><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
-
         // TODO: jquery sort children by tier
     };
     var removeSelectedCard = (cardId) => {
@@ -334,13 +331,8 @@ $(document).ready(function() {
         var userDeckTitleList = userDeckTitle.split(magicWordForTrim);
         console.log('userDeckTitleList');
         updateSidebar(userDeckTitleList);
-        // for (var i = 0; i < userDeckTitleList.length; i++) {
-        //     userDeckList.titleList.push(userDeckTitleList[i]);
-        //     console.log('- ' + userDeckTitleList[i]);
-        //     // TODO: load deckData.
-        // }
         // MARK: save할 때는 encodeURIComponent를 걸자.
-    };// a-%2B%7C%2B-b-%2B%7C%2B-c-%2B%7C%2B-d!%40%23-%2B%7C%2B-e
+    };
 
     var saveDeck = (name, cardList) => {
         // $.cookie('name', 'value', { expires: 7, path: '/' });
@@ -423,23 +415,6 @@ $(document).ready(function() {
             }else {
                 console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
             }
-            // if (isExist) {
-            //     removeSelectedCard(cardId);
-            // }else if (maxSelectedCount > selectedCard.length){
-            //     addSelectedCard(cardId);
-            // }else {
-            //     console.log("선택 오버");
-            // }
-            // if (isExist) {
-            //     removeSelectedCard(cardId);
-            //     $this.text('선택');
-            // }else if (maxSelectedCount > selectedCard.length){
-            //     addSelectedCard(cardId);
-            //     $this.text('해제');
-            // }else {
-            //     console.log("선택 오버");
-            //     alert('총 ' + maxSelectedCount + '장의 카드만 선택할 수 있습니다.');
-            // }
         });
 
         $('#userDeckList').on('click', 'button.user-deck', function() {
