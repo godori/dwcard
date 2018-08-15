@@ -9,15 +9,15 @@ This is simple card game as a side project of [Deer.White](https://www.instagram
  
 ## Rules
 1. Deck building
-- Single Deck has 10 cards
-- Single Deck has only one "Gold" tier card
-- Maximum number of same "Normal" tier cards is 3
+- Single Deck include 10 cards
+- For Normal tier cards, a maximum of three copies of a card
+- For Gold tier cards, deck has only one card
 
 2. Card Play
 - Best 2 out of 3
-- First round, each plays draw 5 cards from the deck
-- Can swap 2 cards only first round
-- Follow rounds, each players draw 1 card from the deck
+- At the start of a match, each player draws 5 cards from their deck
+- Round 1, player can swap 2 cards
+- Round 2 and 3, each player draws 1 card from the deck
 - Each turns, player can play one card or pass the turn
 - If all player passed the turn or there is no card to play, round finish
 
