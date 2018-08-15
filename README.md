@@ -45,8 +45,13 @@ __Card Play__
 - [ ] load decks from the Deck Builder
 
 __Deck Buildig__
-- [x] done
-- [ ] to do
+- [x] cookie save & load system
+- [x] set card images
+- [x] faction tab
+- [ ] deck save, load integrate with cookie system
+- [ ] draw load user custom deck cards
+- [ ] edit user custom deck
+- [ ] remove user custom deck
 
 ---
 ## License
