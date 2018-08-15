@@ -1,35 +1,27 @@
 [{
-    "factionDesc" : {
+    "factionData" : {
         "white": "부족 진영의 카드입니다.\n샤먼의 능력을 사용하여 동물의 힘을 끌어내 이용할 수 있습니다.",
-        "boy": "죽음 진영의 카드입니다.\n삶과 죽음의 경계에 있는 자들과 저주받은 힘을 사용합니다.",
+        "death": "죽음 진영의 카드입니다.\n삶과 죽음의 경계에 있는 자들과 저주받은 힘을 사용합니다.",
         "nature": "자연 진영의 카드입니다.\n자연 본연의 강력한 힘을 사용합니다."
     },
-    "0" : {
-        "idx": "0",
-        "name": "white"
-    },
-    "1" : {
-        "idx": "0",
-        "name": "boy"
-    },
     "_comment": "data: 카드 정보 리스트. idx: 파일 번호(unique), name: 카드 이름, group: 카드 소속(white, boy, nature), tier: 카드 등급",
-    "data": [
-        {"idx": 1,"name": "castle", "group": "white", "tier":"gold", "point": 6 , "ability" : "아군이 등장하면 1포인트를 증가시킵니다.", "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 2,"name": "altar", "group": "boy", "tier":"silver", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 3,"name": "foxes", "group": "nature", "tier":"bronze", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 4,"name": "boy", "group": "boy", "tier":"gold", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 5,"name": "fire-mage", "group": "white", "tier":"silver", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 6,"name": "friend", "group": "white", "tier":"bronze", "point": 7 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 7,"name": "cats", "group": "nature", "tier":"bronze", "point": 9 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+    "cardData": [
+        {"idx": 1,"name": "castle", "group": "white", "tier":"normal", "point": 6 , "ability" : "아군이 등장하면 1포인트를 증가시킵니다.", "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 2,"name": "altar", "group": "death", "tier":"normal", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 3,"name": "foxes", "group": "nature", "tier":"normal", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 4,"name": "boy", "group": "death", "tier":"gold", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 5,"name": "firemage", "group": "white", "tier":"normal", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 6,"name": "friend", "group": "white", "tier":"normal", "point": 7 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 7,"name": "cats", "group": "nature", "tier":"normal", "point": 9 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
         {"idx": 8,"name": "villagechief", "group": "white", "tier":"gold", "point": 4 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 9,"name": "white", "group": "white", "tier":"silver", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 10,"name": "diana", "group": "white", "tier":"bronze", "point": 10 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 11,"name": "nymph", "group": "nature", "tier":"gold", "point": 4 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 12,"name": "fox", "group": "nature", "tier":"silver", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 13,"name": "white-hair", "group": "nature", "tier":"gold", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 14,"name": "aurora", "group": "nature", "tier":"bronze", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 15,"name": "pillar", "group": "nature", "tier":"silver", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 16,"name": "ruins", "group": "nature", "tier":"bronze", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
-        {"idx": 17,"name": "bridge", "group": "neutral", "tier":"silver", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"}
+        {"idx": 9,"name": "white", "group": "white", "tier":"gold", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 10,"name": "dyna", "group": "white", "tier":"gold", "point": 10 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 11,"name": "nymph", "group": "nature", "tier":"normal", "point": 4 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 12,"name": "fox", "group": "nature", "tier":"normal", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 13,"name": "whitehair", "group": "nature", "tier":"normal", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 14,"name": "aurora", "group": "nature", "tier":"normal", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 15,"name": "pillar", "group": "nature", "tier":"normal", "point": 5 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 16,"name": "ruins", "group": "nature", "tier":"normal", "point": 6 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"},
+        {"idx": 17,"name": "bridge", "group": "neutral", "tier":"normal", "point": 8 , "desc": "뿔이 돋은 자가 흰 사슴의 뿔을 베어와 불을 지피면 다시금 번영할 지니"}
     ]
 }]
