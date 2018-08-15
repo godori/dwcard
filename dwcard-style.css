@@ -150,7 +150,7 @@ main {
     border-style: solid;
     border-color:#daa520;
 }
-.card.tier-silver {
+.card.tier-silver, .card.tier-normal {
     border-style: solid;
     border-color:#c0c0c0;
 }
