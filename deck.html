@@ -279,7 +279,6 @@ $(document).ready(function() {
     var addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
         // $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
-        $('.card-area .card-item[data-id="'+cardId+'"]').remove();
         var data = cardData[cardId-1];
         // <li><span>[3] nymph</span><button class="deselect" data-id="1">X</button></li>
         $('ul.selectedList').append('<li><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
@@ -406,8 +405,21 @@ $(document).ready(function() {
                     duplicateCount++;
                 }
             }
-            if (duplicateCount < cardTierAmount[cardData[cardId-1].tier]) {
+            var cardAmount = cardTierAmount[cardData[cardId-1].tier];
+            if (duplicateCount < cardAmount) {
                 addSelectedCard(cardId);
+                var remain = cardAmount - duplicateCount - 1;
+
+                if (remain <= 0) {
+                    $('.card-area .card-item[data-id="'+cardId+'"]').remove();
+                }else {
+                    var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+                    if (remain == 1) {
+                        $amount.text('');
+                    }else {
+                        $amount.text('x'+remain);
+                    }
+                }
             }else {
                 console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
             }
