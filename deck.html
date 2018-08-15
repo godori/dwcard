@@ -83,12 +83,24 @@
         .neutral-faction {
             background-image: url('img/faction-cover/min/neutral-faction.png');
         }
-        
+
+        .area.deck-list {
+            padding: 10px;
+        }
+
+        .area.deck-list h3 {
+            color: white;
+        }
+
         ul#userDeckList {
             list-style-type: none;
         }
         ul#userDeckList li {
             margin-bottom: 12px;
+        }
+        ul#userDeckList li button {
+            width:120px;
+            height: 24px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -98,6 +110,7 @@
     <div class="container">
         <!-- right side : 덱 리스트 영역 -->
         <div class="area deck-list">
+            <h3>Deck List</h3>
             <ul id="userDeckList">
                 <li><button class="create-deck">New Deck</button></li>
                 <li><button>1번 덱</button></li>
@@ -136,8 +149,9 @@
 <script>
     var cardData = [];
     var selectedCard = [];
-    const maxSelectedCount = 5;
-    const magicWordForTrim = '-+|+-';
+    const maxSelectedCount = 10;
+    const magicWordForTrim = '-|-';
+    const cookieDeckDataHead = 'deckData_';
     var userDeckList = {
         titleList: [],
         deckList: {}
@@ -145,6 +159,17 @@
 $(document).ready(function() {
     $.ajaxSetup({ cache: false });
     
+    /**
+     * 쿠키사용정보
+     * userDeckTitleList
+     * - info : 저장된 사용자 덱 이름 리스트
+     * - format : 덱정보-|-덱정보-|-...계속...-|-덱정보
+     * - 덱정보: 덱종류한글자(w 화이트, b 소년, n 자연)덱이름
+     * deckData_사용자덱이름
+     * - info : 해당 덱의 카드 리스트
+     * - format : 카드번호와,로 구분
+     */
+
     /**
      * json에서 전체 카드 데이터 불러오기
      **/
@@ -253,6 +278,31 @@ $(document).ready(function() {
         selectedCard = [];
     };
 
+    var updateSidebar = (deckTitleList) => {
+        var $userDeckList = $('#userDeckList');
+        $userDeckList.html('');
+        $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
+        for (var i = 0; i < deckTitleList.length; i++) {
+            $userDeckList.append('<li><button class="user-deck" data-title="'+deckTitleList[i]+'">'+deckTitleList[i]+'</button></li>');
+        }
+    }
+
+    var loadUserDeckData = (deckTitle) => {
+        console.log(cookieDeckDataHead + deckTitle);
+        var txtDeckCardList = $.cookie(cookieDeckDataHead + deckTitle);
+        console.log(txtDeckCardList);
+        if (typeof txtDeckCardList === 'undefined') {
+            console.log('덱 정보를 불러올 수 없습니다.');
+            return undefined;
+        }
+        var deckCardList = txtDeckCardList.split(',');
+        for (var i = 0; i < deckCardList.length; i++) {
+            deckCardList[i] = parseInt(deckCardList[i]);
+        }
+        console.log(deckCardList);
+
+    }
+
     var loadUserDeckList = () => {
         // $.cookie('name');
         var userDeckTitle = $.cookie('userDeckTitleList');
@@ -262,11 +312,12 @@ $(document).ready(function() {
         console.log('cookie: '+userDeckTitle);
         var userDeckTitleList = userDeckTitle.split(magicWordForTrim);
         console.log('userDeckTitleList');
-        for (var i = 0; i < userDeckTitleList.length; i++) {
-            userDeckList.titleList.push(userDeckTitleList[i]);
-            console.log('- ' + userDeckTitleList[i]);
-            // TODO: load deckData.
-        }
+        updateSidebar(userDeckTitleList);
+        // for (var i = 0; i < userDeckTitleList.length; i++) {
+        //     userDeckList.titleList.push(userDeckTitleList[i]);
+        //     console.log('- ' + userDeckTitleList[i]);
+        //     // TODO: load deckData.
+        // }
         // MARK: save할 때는 encodeURIComponent를 걸자.
     };// a-%2B%7C%2B-b-%2B%7C%2B-c-%2B%7C%2B-d!%40%23-%2B%7C%2B-e
 
@@ -316,6 +367,12 @@ $(document).ready(function() {
             $('.area.card-info .card').removeClass('selected');
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
             showCardToggleBtn(cardId);
+        });
+
+        $('#userDeckList').on('click', 'button.user-deck', function() {
+            var deckTitle = $(this).attr('data-title');
+            loadUserDeckData(deckTitle);
+            // TODO:
         });
 
         $('.tab-list .btn:first').click();
