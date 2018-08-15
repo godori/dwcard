@@ -9,11 +9,7 @@ addCardInfo(4, 2, 'silver', '3번', '설명');
 addCardInfo(5, 1, 'bronze', '여우', '파이어폭스');
 
 $(document).ready(function () {
-  console.log('dw card script init');
-
-  $('.card').click(function(){
-    game.moveCard(this);
-  });
+  console.log('>>> dw card script init');
 
   $('.card .point').hide();
   $('.card .desc').hide();
@@ -32,29 +28,6 @@ $(document).ready(function () {
     $(this).children('.desc').hide();
   });
 
-  $('.card').on('mousemove', (e) => {
-    var tooltip = $('.tooltip');
-    
-    var cardImg = e.currentTarget.style.backgroundImage;
-    console.log(cardImg);
-    
-    for (var i=tooltip.length; i--;) {
-      var desc = tooltip[i];
-      desc.style.display = 'block';
-      desc.style.left = e.pageX + 'px';
-      desc.style.top = e.pageY + 'px';
-      var dt = $(desc).find('.detail')[0];
-      dt.style.backgroundImage = cardImg;
-      console.log(dt);
-      
-    }
-  }).on('mouseleave', (e) => {
-    var tooltip = $('.tooltip');
-    for (var i=tooltip.length; i--;) {
-      tooltip[i].style.display = 'none';
-    }
-  })
-
   game.init();
 });
 
@@ -65,12 +38,13 @@ _loadJsonData = () => {
       resolve(json)
     })
       .fail(() => {
-        reject('fail to load json')
+        reject('>>> fail to load json')
       })
   })
 }
 
 var game = {
+  factionData: [],
   cardData: [],
   opponent: {
     hand: [1, 2, 3, 4],
@@ -80,11 +54,12 @@ var game = {
   opponentHandCards: [1, 2, 3, 4, 5],
   opponentPlayCards: [],
   playerHandCards: [1, 2, 3, 4, 5],
-  playerPlayCards: [],
+  playerPlayCards: [6],
   init: () => {
     _loadJsonData().then((res) => {
-      console.log('card load success!');
-      game.cardData = res
+      console.log('>>> card load success!');
+      game.cardData = res[0].cardData
+      game.factionData = res[0].factionData
       game.initGame()
     },
       (err) => {
@@ -92,7 +67,8 @@ var game = {
       })
   },
   initGame: () => {
-    console.log(game.cardData);
+    // console.log(game.cardData);
+    // console.log(game.factionData);
     
     game.faction.init()
 
@@ -100,7 +76,37 @@ var game = {
     game.assignCard('opponent', game.opponentHandCards);
 
     game.shuffle(game.playerHandCards);
-    game.assignCard('player', game.playerHandCards);
+    game.createCardHtml('player',game.playerHandCards);
+    
+    // event handler
+    $('.card').on('click', (e) => {
+      game.moveCard(e.currentTarget)
+    })
+    .on('mousemove', (e) => {
+      var tooltip = $('.tooltip');
+      var card = e.currentTarget;
+      console.log(card);
+      
+      var cardImg = card.style.backgroundImage;
+      
+      for (var i=tooltip.length; i--;) {
+        var desc = tooltip[i];
+        
+        desc.style.display = 'block';
+        desc.style.left = e.pageX + 'px';
+        desc.style.top = e.pageY + 'px';
+  
+        var dt = $(desc).find('.detail')[0];
+        dt.style.backgroundImage = cardImg;
+      }
+    })
+    .on('mouseleave', (e) => {
+      var tooltip = $('.tooltip');
+      for (var i=tooltip.length; i--;) {
+        tooltip[i].style.display = 'none';
+      }
+    })
+    
   },
   faction : {
     init : () => {
@@ -135,7 +141,6 @@ var game = {
 
   },
   moveCard: (target) => {
-    console.log(target);
     var card = $(target);
     var playLine = $('.player-board .card-play');
     
@@ -172,12 +177,32 @@ var game = {
       cards[random] = temp;
     }
   },
-  assignCard: (owner, cards) => {
-    $('.' + owner + '-area .card').each(function (index) {
-      $(this).attr('data-card-value', cards[index])
+  // card 데이터를 html로 생성
+  createCardHtml: (owner, cards) => {
+    console.log('>>> create card html');
+    
+    $.each(cards, (idx, cardId) => {
+      var $card = $('<div class="card"></div>');
+      $card.addClass(owner + '-faction');
+      $card.data('cardId', cardId);
 
+      game._setCardInfo($card);
+
+      // card-line에 배치
+      $('.' + owner + '-area .card-hand').append($card);  
+    });
+  },
+  assignCard: (owner, cards) => {
+    
+    $('.' + owner + '-area .card').each(function (index) {
+      // $(this).attr('data-card-idx', cards[index])
+      // const card = game.cardData[index+1]; 
+      // console.log(card);
+      
+      // player 카드거나, opponent가 보드에 낸 카드의 경우
       if (owner === 'player' || $(this).closest('.card-line').hasClass('card-play')) {
         game.setCardImage($(this))
+        // game.setCardInfo($(this))
       }
     })
 
@@ -191,25 +216,30 @@ var game = {
 
     });
   },
+  _setCardInfo: ($card) => {
+    const cardId = $card.data('cardId');
+    const cardInfo = game.cardData[cardId-1];
+    
+    // set point info
+    const point = cardInfo.point;
+    $card.data('point',point);
+    var $point = $('<div class="point"></div>');
+    $point.text(point);
+    $card.append($point);
+    
+    // set tier info
+    const tier = cardInfo.tier;
+    $card.data('tier',tier);
+    (tier === 'gold') ? $card.addClass('tier-gold') : $card.addClass('tier-normal')
+
+    game.setCardImage($card)
+  },
   setCardImage: (card) => {
-    var cardValue = card.data('cardValue');
-    var imgUrl = 'img/card/min/' + cardValue + '.png';
+    const imgUrl = 'img/card/min/' + card.data('cardId') + '.png';
     card.css({
       "background": "url(" + imgUrl + ")",
       "background-size": "100% 100%",
     }).addClass('selected');
-
-    var cardInfo = cardInfoList[cardValue];
-    var pointLabel = card.children('.point');
-    pointLabel.text(cardInfo.point);
-    pointLabel.show();
-    if (cardInfo.tier == 'gold') {
-      card.addClass('tier-gold');
-    } else if (cardInfo.tier == 'silver') {
-      card.addClass('tier-silver');
-    } else {
-      card.addClass('tier-bronze');
-    }
   },
   checkWin: function () { // no use
     // console.log('checkwin');
