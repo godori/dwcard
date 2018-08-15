@@ -11,6 +11,9 @@ addCardInfo(5, 1, 'bronze', '여우', '파이어폭스');
 $(document).ready(function () {
   console.log('dw card script init');
 
+  $('.card').click(function(){
+    game.moveCard(this);
+  });
 
   $('.card .point').hide();
   $('.card .desc').hide();
@@ -28,6 +31,29 @@ $(document).ready(function () {
   }, function () {
     $(this).children('.desc').hide();
   });
+
+  $('.card').on('mousemove', (e) => {
+    var tooltip = $('.tooltip');
+    
+    var cardImg = e.currentTarget.style.backgroundImage;
+    console.log(cardImg);
+    
+    for (var i=tooltip.length; i--;) {
+      var desc = tooltip[i];
+      desc.style.display = 'block';
+      desc.style.left = e.pageX + 'px';
+      desc.style.top = e.pageY + 'px';
+      var dt = $(desc).find('.detail')[0];
+      dt.style.backgroundImage = cardImg;
+      console.log(dt);
+      
+    }
+  }).on('mouseleave', (e) => {
+    var tooltip = $('.tooltip');
+    for (var i=tooltip.length; i--;) {
+      tooltip[i].style.display = 'none';
+    }
+  })
 
   game.init();
 });
@@ -106,6 +132,29 @@ var game = {
 
       game.selectFaction()
     })
+
+  },
+  moveCard: (target) => {
+    console.log(target);
+    var card = $(target);
+    var playLine = $('.player-board .card-play');
+    
+    var oldOffset = card.offset();
+    card.appendTo(playLine);
+    var newOffset = card.offset(); 
+    
+    var temp = card.clone().appendTo('body');
+    temp.css({
+      'position': 'absolute',
+      'left': oldOffset.left,
+      'top': oldOffset.top,
+      'z-index': 1000
+    });
+    card.hide();
+    temp.animate({'top': newOffset.top, 'left': newOffset.left}, 'slow', function(){
+      card.show();
+      temp.remove();
+   });
 
   },
   selectFaction: () => {
