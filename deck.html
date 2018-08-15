@@ -63,10 +63,10 @@
         .card-info .desc {
             margin-top: 0px;
         }
-        .card.selected {
+        /* .card.selected {
             cursor: pointer;
             box-shadow: 0 0 4px 6px black;
-        }
+        } */
 
         /* faction cover image */
         .white-faction{
@@ -102,6 +102,35 @@
             width:120px;
             height: 24px;
         }
+
+        ul.selectedList {
+            list-style-type: none;
+            margin-top:8px;
+        }
+
+        ul.selectedList li {
+            margin-bottom: 12px;
+            width:120px;
+            /* height:22px; */
+            line-height:26px;
+            text-align: center;
+        }
+        ul.selectedList span {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+        }
+        ul.selectedList .deselect {
+            float:right;
+            /* padding:3px; */
+            background: none;
+            border:none;
+            cursor: pointer;
+            background-color:#fffa;
+            width: 22px;
+            height: 22px;
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -144,10 +173,10 @@
             <div>
                 <button class="btnSelect" data-id="-1" style="display:none;">선택</button>
             </div>
-            <hr style="border-color: #fff3;border-width: 1px;width: 100%;">
+            <hr style="border-color: #fff3;border-width: 1px;width: 100%;margin-bottom:10px;">
             <h3>Selected List</h3>
             <ul class="selectedList">
-
+                <!-- <li><span>[3] nymph</span><button class="deselect" data-id="1">X</button></li> -->
             </ul>
         </div>
     </div>
@@ -249,7 +278,13 @@ $(document).ready(function() {
 
     var addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
-        $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
+        // $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
+        $('.card-area .card-item[data-id="'+cardId+'"]').remove();
+        var data = cardData[cardId-1];
+        // <li><span>[3] nymph</span><button class="deselect" data-id="1">X</button></li>
+        $('ul.selectedList').append('<li><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
+
+        // TODO: jquery sort children by tier
     };
     var removeSelectedCard = (cardId) => {
         // selectedCard.push(cardId);
@@ -332,7 +367,7 @@ $(document).ready(function() {
                 $cardArea.append($newCard);
             }
             clearSelectedCard();
-            $('.card-area .card-item:first').click();
+            $('.card-area .card-item:first').mouseover();
         });
 
         /**
@@ -365,20 +400,24 @@ $(document).ready(function() {
             if (cardId == -1)
                 return;
 
-            var isExist = false;
+            var duplicateCount = 0;
             for (var i = 0; i < selectedCard.length; i++) {
                 if (cardId == selectedCard[i]) {
-                    isExist = true;
-                    break;
+                    duplicateCount++;
                 }
             }
-            if (isExist) {
-                removeSelectedCard(cardId);
-            }else if (maxSelectedCount > selectedCard.length){
+            if (duplicateCount < cardTierAmount[cardData[cardId-1].tier]) {
                 addSelectedCard(cardId);
             }else {
-                console.log("선택 오버");
+                console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
             }
+            // if (isExist) {
+            //     removeSelectedCard(cardId);
+            // }else if (maxSelectedCount > selectedCard.length){
+            //     addSelectedCard(cardId);
+            // }else {
+            //     console.log("선택 오버");
+            // }
             // if (isExist) {
             //     removeSelectedCard(cardId);
             //     $this.text('선택');
