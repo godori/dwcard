@@ -37,6 +37,7 @@ __Card Play__
 - [x] game board layout
 - [x] display card details
 - [x] card picking animation
+- [x] create card element and set data
 - [ ] calculate card points
 - [ ] draw card
 - [ ] pass turn
