@@ -63,10 +63,10 @@
         .card-info .desc {
             margin-top: 0px;
         }
-        .card.selected {
+        /* .card.selected {
             cursor: pointer;
             box-shadow: 0 0 4px 6px black;
-        }
+        } */
 
         /* faction cover image */
         .white-faction{
@@ -83,20 +83,63 @@
         .neutral-faction {
             background-image: url('img/faction-cover/min/neutral-faction.png');
         }
-        
+
+        .area.deck-list {
+            padding: 10px;
+        }
+
+        .area.deck-list h3 {
+            color: white;
+        }
+
         ul#userDeckList {
             list-style-type: none;
         }
         ul#userDeckList li {
             margin-bottom: 12px;
         }
+        ul#userDeckList li button {
+            width:120px;
+            height: 24px;
+        }
+
+        ul.selectedList {
+            list-style-type: none;
+            margin-top:8px;
+        }
+
+        ul.selectedList li {
+            margin-bottom: 12px;
+            width:120px;
+            /* height:22px; */
+            line-height:26px;
+            text-align: center;
+        }
+        ul.selectedList span {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+        }
+        ul.selectedList .deselect {
+            float:right;
+            /* padding:3px; */
+            background: none;
+            border:none;
+            cursor: pointer;
+            background-color:#fffa;
+            width: 22px;
+            height: 22px;
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- right side : 덱 리스트 영역 -->
         <div class="area deck-list">
+            <h3>Deck List</h3>
             <ul id="userDeckList">
                 <li><button class="create-deck">New Deck</button></li>
                 <li><button>1번 덱</button></li>
@@ -116,7 +159,8 @@
                 <!-- <div class="card-item card"></div> -->
             </div>
             <div class="bottom">
-                <button id="btnReset">초기화</button>
+                <button id="btnReset">선택 초기화</button><br>
+                <input type="text" value="" name="deckName" placeholder="덱 이름">
                 <button id="btnDeckSave">저장</button>
             </div>
         </div>
@@ -129,13 +173,41 @@
             <div>
                 <button class="btnSelect" data-id="-1" style="display:none;">선택</button>
             </div>
+            <hr style="border-color: #fff3;border-width: 1px;width: 100%;margin-bottom:10px;">
+            <h3>Selected List</h3>
+            <ul class="selectedList">
+                <!-- <li><span>[3] nymph</span><button class="deselect" data-id="1">X</button></li> -->
+            </ul>
         </div>
     </div>
 <script>
-$(document).ready(function() {
-    $.ajaxSetup({ cache: false });
     var cardData = [];
     var selectedCard = [];
+    const maxSelectedCount = 10;
+    const magicWordForTrim = '-|-';
+    const cookieDeckDataHead = 'deckData_';
+    const cardTierAmount = {
+        'normal' : 3,
+        'gold': 1
+    };
+    var userDeckList = {
+        titleList: [],
+        deckList: {}
+    };
+$(document).ready(function() {
+    $.ajaxSetup({ cache: false });
+    
+    /**
+     * 쿠키사용정보
+     * userDeckTitleList
+     * - info : 저장된 사용자 덱 이름 리스트
+     * - format : 덱정보-|-덱정보-|-...계속...-|-덱정보
+     * - 덱정보: 덱종류한글자(w 화이트, b 소년, n 자연)덱이름
+     * deckData_사용자덱이름
+     * - info : 해당 덱의 카드 리스트
+     * - format : 카드번호와,로 구분
+     */
+
     /**
      * json에서 전체 카드 데이터 불러오기
      **/
@@ -168,26 +240,23 @@ $(document).ready(function() {
      **/
     var sortByTier = (cards) => {
         var gold = [];
-        var silver = [];
-        var bronze = [];
+        var normal = [];
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].tier == 'bronze')
-                bronze.push(cards[i]);
-            else if (cards[i].tier == 'silver')
-                silver.push(cards[i]);
+            if (cards[i].tier == 'normal')
+                normal.push(cards[i]);
             else if (cards[i].tier == 'gold')
                 gold.push(cards[i]);
         }
-        return gold.concat(silver.concat(bronze));
+        return gold.concat(normal);
     }
 
     /**
      * 카드 엘리먼트 생성
      **/
     var generateCardElement = (cardInfo) => {
-        var cardId = cardInfo.idx;
+        var cardId = cardInfo.id;
         var imgUrl = 'img/card/min/' + cardId + '.png';
-        var $card = $('<div class="card-item card"><div class="point"></div></div>');
+        var $card = $('<div class="card-item card"><div class="point"></div><div class="amount"></div></div>');
         $card.attr('data-id', cardId);
         $card.css({
             "background": "url(" + imgUrl + ")",
@@ -196,39 +265,22 @@ $(document).ready(function() {
         var pointLabel = $card.children('.point');
         pointLabel.text(cardInfo.point);
         pointLabel.show();
+        var amountLabel = $card.children('.amount');
         if (cardInfo.tier == 'gold') {
             $card.addClass('tier-gold');
-        } else if (cardInfo.tier == 'silver') {
-            $card.addClass('tier-silver');
+            amountLabel.text('');
         } else {
-            $card.addClass('tier-bronze');
+            $card.addClass('tier-normal');
+            amountLabel.text('x3');
         }
         return $card;
     };
 
-    /**
-     * 카드 선택/해제 버튼 보이기
-     **/
-    var showCardToggleBtn = (id) => {
-        var isExist = false;
-        for (var i = 0; i < selectedCard.length; ++i) {
-            if (selectedCard[i] == id) {
-                isExist = true;
-                break;
-            }
-        }
-        var $btn = $('.card-info .btnSelect');
-        if (isExist)
-            $btn.text('해제');
-        else
-            $btn.text('선택');
-        $btn.attr('data-id', id);
-        $btn.show();
-    };
-
     var addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
-        $('.card-area .card-item[data-id="'+cardId+'"]').addClass('selected');
+        var data = cardData[cardId-1];
+        $('ul.selectedList').append('<li><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
+        // TODO: jquery sort children by tier
     };
     var removeSelectedCard = (cardId) => {
         // selectedCard.push(cardId);
@@ -243,12 +295,56 @@ $(document).ready(function() {
     var clearSelectedCard = () => {
         selectedCard = [];
     };
+
+    var updateSidebar = (deckTitleList) => {
+        var $userDeckList = $('#userDeckList');
+        $userDeckList.html('');
+        $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
+        for (var i = 0; i < deckTitleList.length; i++) {
+            $userDeckList.append('<li><button class="user-deck" data-title="'+deckTitleList[i]+'">'+deckTitleList[i]+'</button></li>');
+        }
+    }
+
+    var loadUserDeckData = (deckTitle) => {
+        console.log(cookieDeckDataHead + deckTitle);
+        var txtDeckCardList = $.cookie(cookieDeckDataHead + deckTitle);
+        console.log(txtDeckCardList);
+        if (typeof txtDeckCardList === 'undefined') {
+            console.log('덱 정보를 불러올 수 없습니다.');
+            return undefined;
+        }
+        var deckCardList = txtDeckCardList.split(',');
+        for (var i = 0; i < deckCardList.length; i++) {
+            deckCardList[i] = parseInt(deckCardList[i]);
+        }
+        console.log(deckCardList);
+
+    }
+
+    var loadUserDeckList = () => {
+        // $.cookie('name');
+        var userDeckTitle = $.cookie('userDeckTitleList');
+        if (typeof userDeckTitle === 'undefined') {
+            return;
+        }
+        console.log('cookie: '+userDeckTitle);
+        var userDeckTitleList = userDeckTitle.split(magicWordForTrim);
+        console.log('userDeckTitleList');
+        updateSidebar(userDeckTitleList);
+        // MARK: save할 때는 encodeURIComponent를 걸자.
+    };
+
+    var saveDeck = (name, cardList) => {
+        // $.cookie('name', 'value', { expires: 7, path: '/' });
+        // $.cookie('deckList', 'sadf');
+    };
+
     loadCardData().then((json) => {
-        cardData = json[0].data;
+        cardData = json[0].cardData;
         console.log(cardData);
 
         /**
-         * 진영 택 버튼 클릭 
+         * 진영 탭 버튼 클릭 
          **/
         $('.tab-list .btn').click(function(){
             var group = $(this).data('group');
@@ -262,7 +358,7 @@ $(document).ready(function() {
                 $cardArea.append($newCard);
             }
             clearSelectedCard();
-            $('.card-area .card-item:first').click();
+            $('.card-area .card-item:first').mouseover();
         });
 
         /**
@@ -274,18 +370,65 @@ $(document).ready(function() {
         });
 
         /**
-         * 빌더 보드에서 카드 선택
+         * 빌더 보드에서 카드 mouseover
          **/
-        $('.builder-board .card-area').on('click', '.card', function() {
+        $('.builder-board .card-area').on('mouseover', '.card', function() {
             var $card = $(this);
             var cardId = $card.attr('data-id');
             console.log(cardData[cardId]);
             $('.area.card-info .card').replaceWith($card.clone());
             $('.area.card-info .card').removeClass('selected');
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
-            showCardToggleBtn(cardId);
         });
+
+        /**
+         * 빌더 보드에서 카드 선택
+         **/
+        //  $('.card-info .btnSelect').click(function() {
+         $('.builder-board .card-area').on('click', '.card', function() {
+            var $this = $(this);
+            var cardId = Number($this.attr('data-id'));
+            if (cardId == -1)
+                return;
+
+            var duplicateCount = 0;
+            for (var i = 0; i < selectedCard.length; i++) {
+                if (cardId == selectedCard[i]) {
+                    duplicateCount++;
+                }
+            }
+            var cardAmount = cardTierAmount[cardData[cardId-1].tier];
+            if (duplicateCount < cardAmount) {
+                addSelectedCard(cardId);
+                var remain = cardAmount - duplicateCount - 1;
+
+                if (remain <= 0) {
+                    $('.card-area .card-item[data-id="'+cardId+'"]').remove();
+                }else {
+                    var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+                    if (remain == 1) {
+                        $amount.text('');
+                    }else {
+                        $amount.text('x'+remain);
+                    }
+                }
+            }else {
+                console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
+            }
+        });
+
+        $('#userDeckList').on('click', 'button.user-deck', function() {
+            var deckTitle = $(this).attr('data-title');
+            loadUserDeckData(deckTitle);
+            // TODO:
+        });
+
         $('.tab-list .btn:first').click();
+
+        /*
+         * 쿠키에서 사용자 덱 리스트 로드
+         */
+        loadUserDeckList();
 
         /**
          * 덱 리셋 버튼 클릭
@@ -302,33 +445,19 @@ $(document).ready(function() {
          * 덱 저장 버튼 클릭
          **/
         $('#btnDeckSave').click(function() {
-
-        });
-
-        /**
-         * 선택 버튼 클릭
-         **/
-        $('.card-info .btnSelect').click(function() {
-            var $this = $(this);
-            var cardId = Number($this.attr('data-id'));
-            if (cardId == -1)
+            var deckName = $('.bottom input[name="deckName"]').val();
+            if (deckName.length <= 0) {
+                alert('덱 이름을 지정해야 합니다.');
                 return;
-
-            var isExist = false;
-            for (var i = 0; i < selectedCard.length; i++) {
-                if (cardId == selectedCard[i]) {
-                    isExist = true;
-                    break;
-                }
             }
-            if (isExist) {
-                removeSelectedCard(cardId);
-                $this.text('선택');
-            }else {
-                addSelectedCard(cardId);
-                $this.text('해제');
+            // TODO: 쿠키에서 가져온 덱 이름중 중복 있는지 체크
+            if (selectedCard.length < maxSelectedCount) {
+                alert('카드를 ' + maxSelectedCount + '장 모두 선택 바랍니다.');
+                return;
             }
         });
+
+        
     }).catch((error) => {
         console.error(error);
     });
