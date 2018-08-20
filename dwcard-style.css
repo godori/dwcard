@@ -53,9 +53,43 @@ main {
 }
 
 .leader-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     flex-basis: 250px;
     background-color: #daa520;
-    /* padding: 20px; */
+}
+
+.leader {
+    display: inline-block;
+    /* margin-left:10px; */
+    margin : 10px;
+    width: 150px;
+    height: 150px;
+    background-color: #fff0;
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* background-size: 100% 100%; */
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 5px 5px 50px #400000;
+    position: relative;
+    border-width: 5px;
+    border-color: #fff0;
+    border-style: solid;
+}
+.leader-name{
+    font-size : 1.3em;
+}
+.score-area{
+    display: flex;
+    flex-direction: row;
+    
+}
+.score{
+    font-size: 3em;
+    padding: 0 10px 0 10px;
 }
 
 .deck-area{
@@ -125,26 +159,6 @@ main {
     border-color: #fff0;
     border-style: solid;
 }
-
-.leader {
-    display: inline-block;
-    /* margin-left:10px; */
-    margin : 10px;
-    width: 150px;
-    height: 150px;
-    background-color: #fff0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    /* background-size: 100% 100%; */
-    text-align: center;
-    border-radius: 5px;
-    box-shadow: 5px 5px 50px #400000;
-    position: relative;
-    border-width: 5px;
-    border-color: #fff0;
-    border-style: solid;
-}
-
 
 .card.tier-gold {
     border-style: solid;

@@ -80,7 +80,8 @@ var game = {
     
     // event handler
     $('.card').on('click', (e) => {
-      game.moveCard(e.currentTarget)
+      game.moveCard(e.currentTarget);
+      game.setRoundScore();
     })
     .on('mousemove', (e) => {
       var tooltip = $('.tooltip');
@@ -104,12 +105,31 @@ var game = {
         tooltip[i].style.display = 'none';
       }
     })
+  },
+  setRoundScore: () => {
+    game._calculateScore('player');
+    // game._calculateScore('opponent');
+  },
+  _calculateScore: (owner) => {
+    console.log('>>> calculate score after action');
+    var cards = $('.'+owner+'-area .card-play .card');
+    var sum = 0;
+    $.each(cards, function(i,card) {
+        const point = $(card).data('point');
+        if(point && point > 0){
+          sum += point;
+        }
+        console.log(sum);
+    });
+
+    $('.'+owner+'-board .set-score').text(sum);
+
     
   },
   faction : {
     init : () => {
       game.faction.setOpponent()
-      game.faction.setPlayer()
+      // game.faction.setPlayer()
     },
     setOpponent: () => {
       var randNum = Math.round(Math.random() * 2);
