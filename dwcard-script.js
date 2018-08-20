@@ -73,10 +73,10 @@ var game = {
     game.faction.init()
 
     game.shuffle(game.opponentHandCards);
-    game.assignCard('opponent', game.opponentHandCards);
+    game.createCardHtml('opponent','death',game.opponentHandCards);
 
     game.shuffle(game.playerHandCards);
-    game.createCardHtml('player',game.playerHandCards);
+    game.createCardHtml('player','tribe',game.playerHandCards);
     
     // event handler
     $('.card').on('click', (e) => {
@@ -140,7 +140,7 @@ var game = {
                                 })
       
     },
-      
+    
   }, 
   showFactionDesc: (target) => {
     $(target).hover(() => {
@@ -194,21 +194,29 @@ var game = {
     }
   },
   // card 데이터를 html로 생성
-  createCardHtml: (owner, cards) => {
+  createCardHtml: (owner,faction, cards) => {
     console.log('>>> create card html');
-    
+
     $.each(cards, (idx, cardId) => {
       var $card = $('<div class="card"></div>');
       $card.addClass(owner + '-faction');
+      $card.data('faction',faction);
       $card.data('cardId', cardId);
 
-      game._setCardInfo($card);
+      // 카드 위치별 close/open
+      (owner === 'opponent') ? $card.data('isOpen', false) : $card.data('isOpen',true);
 
+      game._setCardInfo($card);
+      game._setCardImage($card)
+      
       // card-line에 배치
       $('.' + owner + '-area .card-hand').append($card);  
     });
   },
   _setCardInfo: ($card) => {
+    if(!$card.data('isOpen'))
+      return;
+
     const cardId = $card.data('cardId');
     const cardInfo = game.cardData[cardId-1];
     
@@ -222,12 +230,15 @@ var game = {
     // set tier info
     const tier = cardInfo.tier;
     $card.data('tier',tier);
+    
+    // set card border by tier
     (tier === 'gold') ? $card.addClass('tier-gold') : $card.addClass('tier-normal')
-
-    game.setCardImage($card)
   },
-  setCardImage: (card) => {
-    const imgUrl = 'img/card/min/' + card.data('cardId') + '.png';
+  _setCardImage: (card) => {
+    const cardImg = 'img/card/min/' + card.data('cardId') + '.png';
+    const coverImg = 'img/faction-cover/min/' + card.data('faction') + '-faction.png';
+    const imgUrl = (card.data('isOpen')) ? cardImg : coverImg;
+
     card.css({
       "background": "url(" + imgUrl + ")",
       "background-size": "100% 100%",

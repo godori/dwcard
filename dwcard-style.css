@@ -240,11 +240,11 @@ main {
 }
 
 /* faction cover */
-.white-faction { background-image:url('img/faction-cover/min/white-faction.png'); }
+.tribe-faction { background-image:url('img/faction-cover/min/tribe-faction.png'); }
 .nature-faction { background-image:url('img/faction-cover/min/nature-faction.png'); }
-.boy-faction { background-image:url('img/faction-cover/min/boy-faction.png'); }
-.opponent-leader { background-image:url('img/leader/boy_200.png'); }
-.player-leader { background-image:url('img/leader/white_200.png'); }
+.death-faction { background-image:url('img/faction-cover/min/death-faction.png'); }
+.opponent-leader-portrait { background-image:url('img/leader/boy_200.png'); }
+.player-leader-portrait { background-image:url('img/leader/white_200.png'); }
 
 /* mouse event */
 .card:hover {
