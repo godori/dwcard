@@ -85,8 +85,6 @@ var game = {
     .on('mousemove', (e) => {
       var tooltip = $('.tooltip');
       var card = e.currentTarget;
-      console.log(card);
-      
       var cardImg = card.style.backgroundImage;
       
       for (var i=tooltip.length; i--;) {
@@ -122,9 +120,7 @@ var game = {
                                 })
       
     },
-    setPlayer: () => {
       
-    }
   }, 
   showFactionDesc: (target) => {
     $(target).hover(() => {
@@ -192,30 +188,6 @@ var game = {
       $('.' + owner + '-area .card-hand').append($card);  
     });
   },
-  assignCard: (owner, cards) => {
-    
-    $('.' + owner + '-area .card').each(function (index) {
-      // $(this).attr('data-card-idx', cards[index])
-      // const card = game.cardData[index+1]; 
-      // console.log(card);
-      
-      // player 카드거나, opponent가 보드에 낸 카드의 경우
-      if (owner === 'player' || $(this).closest('.card-line').hasClass('card-play')) {
-        game.setCardImage($(this))
-        // game.setCardInfo($(this))
-      }
-    })
-
-    game.moveCardHandlers();
-  },
-  flipCard: () => {
-
-  },
-  moveCardHandlers: function () {
-    $('.card').on('click', function () {
-
-    });
-  },
   _setCardInfo: ($card) => {
     const cardId = $card.data('cardId');
     const cardInfo = game.cardData[cardId-1];
@@ -239,12 +211,6 @@ var game = {
     card.css({
       "background": "url(" + imgUrl + ")",
       "background-size": "100% 100%",
-    }).addClass('selected');
-  },
-  checkWin: function () { // no use
-    // console.log('checkwin');
-    // if($('.unmatched').length === 0){
-    //   $('.container').html('<h1>YOU WON!</h1>');
-    // }
+    });
   }
 }
