@@ -38,7 +38,8 @@ __Card Play__
 - [x] display card details
 - [x] card picking animation
 - [x] create card element and set data
-- [ ] calculate card points
+- [x] calculate card points
+- [ ] opponent auto play
 - [ ] draw card
 - [ ] pass turn
 - [ ] displaying round status
