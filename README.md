@@ -39,7 +39,8 @@ __Card Play__
 - [x] card picking animation
 - [x] create card element and set data
 - [x] calculate card points
-- [ ] opponent auto play
+- [ ] opponent auto play (simple)
+- [ ] display card description when hover
 - [ ] draw card
 - [ ] pass turn
 - [ ] displaying round status
