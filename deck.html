@@ -268,9 +268,13 @@ $(document).ready(function() {
         var amountLabel = $card.children('.amount');
         if (cardInfo.tier == 'gold') {
             $card.addClass('tier-gold');
+            $card.attr('data-amount', 1);
+            $card.attr('data-tier', 'gold');
             amountLabel.text('');
         } else {
             $card.addClass('tier-normal');
+            $card.attr('data-amount', 3);
+            $card.attr('data-tier', 'normal');
             amountLabel.text('x3');
         }
         return $card;
@@ -279,19 +283,68 @@ $(document).ready(function() {
     var addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
         var data = cardData[cardId-1];
-        $('ul.selectedList').append('<li><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
+        $('ul.selectedList').append('<li data-id="'+cardId+'"><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
         // TODO: jquery sort children by tier
     };
+
     var removeSelectedCard = (cardId) => {
-        // selectedCard.push(cardId);
         for(var i = 0; i < selectedCard.length; i++) {
             if (cardId == selectedCard[i]) {
                 selectedCard.splice(i, 1);
                 break;
             }
         }
-        $('.card-area .card-item[data-id="'+cardId+'"]').removeClass('selected');
+        // TODO: asdfasdafsdaf
+        // $('.card-area .card-item[data-id="'+cardId+'"]').removeClass('selected');
+        console.log('.selectedList li[data-id="'+cardId+'"]:first remove()');
+        $('.selectedList li[data-id="'+cardId+'"]:first').remove();
     };
+
+    var sortBoardCard = () => {
+        var $parent = $('.builder-board .card-area');
+        var items = $parent.children('.card-item').sort(function(a, b) {
+            var aTier = $(a).attr('data-tier');
+            var bTier = $(b).attr('data-tier');
+            return (aTier == 'gold' && bTier != 'gold') ? -1 : (aTier != 'gold' && bTier == 'gold') ? 1 : 0;
+        });
+        $parent.append(items);
+    }
+
+    var subtractBoardCard = (cardId) => {
+        var $card = $('.builder-board .card-item[data-id="'+cardId+'"]');
+        var amount = Number($card.attr('data-amount'));
+        if (amount <= 1) {
+            $('.card-area .card-item[data-id="'+cardId+'"]').remove();
+        }else {
+            amount -= 1;
+            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            if (amount == 1)
+                $amount.text('');
+            else
+                $amount.text('x'+amount);
+            $card.attr('data-amount', amount);
+        }
+    };
+
+    var addBoardCard = (cardId) => {
+        var $card = $('.builder-board .card-area .card-item[data-id="'+cardId+'"]');
+        if ($card.length == 0) {
+            $card = generateCardElement(cardData[cardId-1]);
+            var amount = 1;
+            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            $amount.text('');
+            $card.attr('data-amount', amount);
+            $('.builder-board .card-area').append($card);
+            sortBoardCard();
+        }else {
+            var amount = Number($card.attr('data-amount'));
+            amount += 1;
+            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            $amount.text('x'+amount);
+            $card.attr('data-amount', amount);
+        }
+    };
+
     var clearSelectedCard = () => {
         selectedCard = [];
     };
@@ -375,7 +428,7 @@ $(document).ready(function() {
         $('.builder-board .card-area').on('mouseover', '.card', function() {
             var $card = $(this);
             var cardId = $card.attr('data-id');
-            console.log(cardData[cardId]);
+            console.log(cardData[cardId-1]);
             $('.area.card-info .card').replaceWith($card.clone());
             $('.area.card-info .card').removeClass('selected');
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
@@ -384,7 +437,6 @@ $(document).ready(function() {
         /**
          * 빌더 보드에서 카드 선택
          **/
-        //  $('.card-info .btnSelect').click(function() {
          $('.builder-board .card-area').on('click', '.card', function() {
             var $this = $(this);
             var cardId = Number($this.attr('data-id'));
@@ -400,21 +452,25 @@ $(document).ready(function() {
             var cardAmount = cardTierAmount[cardData[cardId-1].tier];
             if (duplicateCount < cardAmount) {
                 addSelectedCard(cardId);
-                var remain = cardAmount - duplicateCount - 1;
 
-                if (remain <= 0) {
-                    $('.card-area .card-item[data-id="'+cardId+'"]').remove();
-                }else {
-                    var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
-                    if (remain == 1) {
-                        $amount.text('');
-                    }else {
-                        $amount.text('x'+remain);
-                    }
-                }
+                subtractBoardCard(cardId);
+                
             }else {
                 console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
             }
+        });
+
+        /**
+         * 카드 선택 취소
+         **/
+        $('.selectedList').on('click', '.deselect', function() {
+            var $this = $(this);
+            var cardId = Number($this.attr('data-id'));
+            console.log('clicked', cardId);
+            if (cardId == -1)
+                return;
+            removeSelectedCard(cardId);
+            addBoardCard(cardId);
         });
 
         $('#userDeckList').on('click', 'button.user-deck', function() {
