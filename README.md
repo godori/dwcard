@@ -52,7 +52,7 @@ __Deck Buildig__
 - [x] set card images
 - [x] faction tab
 - [ ] deck save, load integrate with cookie system
-- [ ] draw load user custom deck cards
+- [x] draw load user custom deck cards
 - [ ] edit user custom deck
 - [ ] remove user custom deck
 

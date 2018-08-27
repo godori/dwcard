@@ -44,6 +44,9 @@
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+        .builder-board .tab-list .btn.selected {
+            background-color: #290F0B;
+        }
         .card-area {
             border: 1px solid white;
             padding : 15px 5px 5px 5px;
@@ -151,8 +154,8 @@
         <!-- center content : 카드 빌딩 영역 -->
         <div class="area builder-board">
             <div class="tab-list">
-                <div class="btn" data-group="white">화이트</div>
-                <div class="btn" data-group="boy">소년</div>
+                <div class="btn" data-group="white">부족</div>
+                <div class="btn" data-group="death">죽음</div>
                 <div class="btn" data-group="nature">자연</div>
             </div>
             <div class="card-area">
@@ -190,6 +193,20 @@
         'normal' : 3,
         'gold': 1
     };
+    const korGroupName = {
+        'white' : '부족',
+        'death' : '죽음',
+        'nature': '자연'
+    };
+    const headerGroupNameSwapper = {
+        'a' : 'white',
+        'b' : 'death',
+        'c' : 'nature',
+        'white' : 'a',
+        'death' : 'b',
+        'nature': 'c'
+    }
+
     var userDeckList = {
         titleList: [],
         deckList: {}
@@ -360,28 +377,31 @@ $(document).ready(function() {
         $userDeckList.html('');
         $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
         for (var i = 0; i < deckTitleList.length; i++) {
-            $userDeckList.append('<li><button class="user-deck" data-title="'+deckTitleList[i]+'">'+deckTitleList[i]+'</button></li>');
+            var group = headerGroupNameSwapper[deckTitleList[i][0]];
+            var korGroup = korGroupName[group];
+            var deckTitle = deckTitleList[i].substr(1);
+            $userDeckList.append('<li><button class="user-deck" data-group="'+group+'" data-title="'+deckTitle+'">['+korGroup+']'+deckTitle+'</button></li>');
         }
     }
 
-    var loadUserDeckData = (deckTitle) => {
-        console.log(cookieDeckDataHead + deckTitle);
-        var txtDeckCardList = $.cookie(cookieDeckDataHead + deckTitle);
-        console.log(txtDeckCardList);
+    var loadUserDeckData = (deckGroup, deckTitle) => {
+        var header = headerGroupNameSwapper[deckGroup];
+        var deckDataCookieName = cookieDeckDataHead + header + deckTitle;
+        console.log('loadl ' + deckDataCookieName);
+        var txtDeckCardList = $.cookie(deckDataCookieName);
         if (typeof txtDeckCardList === 'undefined') {
             console.log('덱 정보를 불러올 수 없습니다.');
             return undefined;
         }
         var deckCardList = txtDeckCardList.split(',');
-        for (var i = 0; i < deckCardList.length; i++) {
-            deckCardList[i] = parseInt(deckCardList[i]);
-        }
         console.log(deckCardList);
-
+        $('.builder-board .tab-list .btn[data-group="'+deckGroup+'"]').click();
+        for (var i = 0; i < deckCardList.length; i++) {
+            $('.builder-board .card-area .card-item[data-id="'+deckCardList[i]+'"]').click();
+        }
     }
 
     var loadUserDeckList = () => {
-        // $.cookie('name');
         var userDeckTitle = $.cookie('userDeckTitleList');
         if (typeof userDeckTitle === 'undefined') {
             return;
@@ -418,6 +438,8 @@ $(document).ready(function() {
             }
             clearSelectedCard();
             $('.card-area .card-item:first').mouseover();
+            $('.tab-list .btn.selected').removeClass('selected');
+            $(this).addClass('selected');
         });
 
         /**
@@ -474,11 +496,15 @@ $(document).ready(function() {
             var cardId = Number($this.attr('data-id'));
             deselectCard(cardId);
         });
-
+        
+        /**
+         * 사용자 덱 선택
+         **/
         $('#userDeckList').on('click', 'button.user-deck', function() {
             var deckTitle = $(this).attr('data-title');
-            loadUserDeckData(deckTitle);
-            // TODO:
+            var deckGroup = $(this).attr('data-group');
+            $('.bottom input[name="deckName"]').val(deckTitle);
+            loadUserDeckData(deckGroup, deckTitle);
         });
 
         $('.tab-list .btn:first').click();
