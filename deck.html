@@ -387,7 +387,7 @@ $(document).ready(function() {
     var loadUserDeckData = (deckGroup, deckTitle) => {
         var header = headerGroupNameSwapper[deckGroup];
         var deckDataCookieName = cookieDeckDataHead + header + deckTitle;
-        console.log('loadl ' + deckDataCookieName);
+        console.log('사용자 덱 로드 ' + deckDataCookieName);
         var txtDeckCardList = $.cookie(deckDataCookieName);
         if (typeof txtDeckCardList === 'undefined') {
             console.log('덱 정보를 불러올 수 없습니다.');
