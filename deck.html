@@ -298,6 +298,14 @@ $(document).ready(function() {
         $('.selectedList li[data-id="'+cardId+'"]:first').remove();
     };
 
+    var deselectCard = (cardId) => {
+        console.log('clicked', cardId);
+        if (cardId == -1)
+            return;
+        removeSelectedCard(cardId);
+        addBoardCard(cardId);
+    };
+
     var sortBoardCard = () => {
         var $parent = $('.builder-board .card-area');
         var items = $parent.children('.card-item').sort(function(a, b) {
@@ -464,11 +472,7 @@ $(document).ready(function() {
         $('.selectedList').on('click', '.deselect', function() {
             var $this = $(this);
             var cardId = Number($this.attr('data-id'));
-            console.log('clicked', cardId);
-            if (cardId == -1)
-                return;
-            removeSelectedCard(cardId);
-            addBoardCard(cardId);
+            deselectCard(cardId);
         });
 
         $('#userDeckList').on('click', 'button.user-deck', function() {
@@ -488,11 +492,10 @@ $(document).ready(function() {
          * 덱 리셋 버튼 클릭
          **/
         $('#btnReset').click(function() {
-            $cardItems = $('.card-area .card-item');
-            for (var i = 0; i < $cardItems.length; i++) {
-                $($cardItems[i]).removeClass('selected');
-            }
-            $('.card-info .btnSelect').text('선택');
+            $('.card-info .selectedList').children('li').each(function() {
+                var cardId = Number($(this, $('.deselect')).attr('data-id'));
+                deselectCard(cardId);
+            });
         });
 
         /**
