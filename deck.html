@@ -44,6 +44,9 @@
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+        .builder-board .tab-list .btn.selected {
+            background-color: #290F0B;
+        }
         .card-area {
             border: 1px solid white;
             padding : 15px 5px 5px 5px;
@@ -151,8 +154,8 @@
         <!-- center content : 카드 빌딩 영역 -->
         <div class="area builder-board">
             <div class="tab-list">
-                <div class="btn" data-group="white">화이트</div>
-                <div class="btn" data-group="boy">소년</div>
+                <div class="btn" data-group="white">부족</div>
+                <div class="btn" data-group="death">죽음</div>
                 <div class="btn" data-group="nature">자연</div>
             </div>
             <div class="card-area">
@@ -190,6 +193,20 @@
         'normal' : 3,
         'gold': 1
     };
+    const korGroupName = {
+        'white' : '부족',
+        'death' : '죽음',
+        'nature': '자연'
+    };
+    const headerGroupNameSwapper = {
+        'a' : 'white',
+        'b' : 'death',
+        'c' : 'nature',
+        'white' : 'a',
+        'death' : 'b',
+        'nature': 'c'
+    }
+
     var userDeckList = {
         titleList: [],
         deckList: {}
@@ -242,9 +259,9 @@ $(document).ready(function() {
         var gold = [];
         var normal = [];
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].tier == 'normal')
+            if (cards[i].tier === 'normal')
                 normal.push(cards[i]);
-            else if (cards[i].tier == 'gold')
+            else if (cards[i].tier === 'gold')
                 gold.push(cards[i]);
         }
         return gold.concat(normal);
@@ -266,7 +283,7 @@ $(document).ready(function() {
         pointLabel.text(cardInfo.point);
         pointLabel.show();
         var amountLabel = $card.children('.amount');
-        if (cardInfo.tier == 'gold') {
+        if (cardInfo.tier === 'gold') {
             $card.addClass('tier-gold');
             $card.attr('data-amount', 1);
             $card.attr('data-tier', 'gold');
@@ -289,7 +306,7 @@ $(document).ready(function() {
 
     var removeSelectedCard = (cardId) => {
         for(var i = 0; i < selectedCard.length; i++) {
-            if (cardId == selectedCard[i]) {
+            if (cardId === selectedCard[i]) {
                 selectedCard.splice(i, 1);
                 break;
             }
@@ -298,12 +315,20 @@ $(document).ready(function() {
         $('.selectedList li[data-id="'+cardId+'"]:first').remove();
     };
 
+    var deselectCard = (cardId) => {
+        console.log('clicked', cardId);
+        if (cardId === -1)
+            return;
+        removeSelectedCard(cardId);
+        addBoardCard(cardId);
+    };
+
     var sortBoardCard = () => {
         var $parent = $('.builder-board .card-area');
         var items = $parent.children('.card-item').sort(function(a, b) {
             var aTier = $(a).attr('data-tier');
             var bTier = $(b).attr('data-tier');
-            return (aTier == 'gold' && bTier != 'gold') ? -1 : (aTier != 'gold' && bTier == 'gold') ? 1 : 0;
+            return (aTier === 'gold' && bTier !== 'gold') ? -1 : (aTier !== 'gold' && bTier ==='gold') ? 1 : 0;
         });
         $parent.append(items);
     }
@@ -316,7 +341,7 @@ $(document).ready(function() {
         }else {
             amount -= 1;
             var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
-            if (amount == 1)
+            if (amount === 1)
                 $amount.text('');
             else
                 $amount.text('x'+amount);
@@ -352,28 +377,31 @@ $(document).ready(function() {
         $userDeckList.html('');
         $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
         for (var i = 0; i < deckTitleList.length; i++) {
-            $userDeckList.append('<li><button class="user-deck" data-title="'+deckTitleList[i]+'">'+deckTitleList[i]+'</button></li>');
+            var group = headerGroupNameSwapper[deckTitleList[i][0]];
+            var korGroup = korGroupName[group];
+            var deckTitle = deckTitleList[i].substr(1);
+            $userDeckList.append('<li><button class="user-deck" data-group="'+group+'" data-title="'+deckTitle+'">['+korGroup+']'+deckTitle+'</button></li>');
         }
     }
 
-    var loadUserDeckData = (deckTitle) => {
-        console.log(cookieDeckDataHead + deckTitle);
-        var txtDeckCardList = $.cookie(cookieDeckDataHead + deckTitle);
-        console.log(txtDeckCardList);
+    var loadUserDeckData = (deckGroup, deckTitle) => {
+        var header = headerGroupNameSwapper[deckGroup];
+        var deckDataCookieName = cookieDeckDataHead + header + deckTitle;
+        console.log('사용자 덱 로드 ' + deckDataCookieName);
+        var txtDeckCardList = $.cookie(deckDataCookieName);
         if (typeof txtDeckCardList === 'undefined') {
             console.log('덱 정보를 불러올 수 없습니다.');
             return undefined;
         }
         var deckCardList = txtDeckCardList.split(',');
-        for (var i = 0; i < deckCardList.length; i++) {
-            deckCardList[i] = parseInt(deckCardList[i]);
-        }
         console.log(deckCardList);
-
+        $('.builder-board .tab-list .btn[data-group="'+deckGroup+'"]').click();
+        for (var i = 0; i < deckCardList.length; i++) {
+            $('.builder-board .card-area .card-item[data-id="'+deckCardList[i]+'"]').click();
+        }
     }
 
     var loadUserDeckList = () => {
-        // $.cookie('name');
         var userDeckTitle = $.cookie('userDeckTitleList');
         if (typeof userDeckTitle === 'undefined') {
             return;
@@ -410,6 +438,8 @@ $(document).ready(function() {
             }
             clearSelectedCard();
             $('.card-area .card-item:first').mouseover();
+            $('.tab-list .btn.selected').removeClass('selected');
+            $(this).addClass('selected');
         });
 
         /**
@@ -438,12 +468,12 @@ $(document).ready(function() {
          $('.builder-board .card-area').on('click', '.card', function() {
             var $this = $(this);
             var cardId = Number($this.attr('data-id'));
-            if (cardId == -1)
+            if (cardId === -1)
                 return;
 
             var duplicateCount = 0;
             for (var i = 0; i < selectedCard.length; i++) {
-                if (cardId == selectedCard[i]) {
+                if (cardId === selectedCard[i]) {
                     duplicateCount++;
                 }
             }
@@ -464,17 +494,17 @@ $(document).ready(function() {
         $('.selectedList').on('click', '.deselect', function() {
             var $this = $(this);
             var cardId = Number($this.attr('data-id'));
-            console.log('clicked', cardId);
-            if (cardId == -1)
-                return;
-            removeSelectedCard(cardId);
-            addBoardCard(cardId);
+            deselectCard(cardId);
         });
-
+        
+        /**
+         * 사용자 덱 선택
+         **/
         $('#userDeckList').on('click', 'button.user-deck', function() {
             var deckTitle = $(this).attr('data-title');
-            loadUserDeckData(deckTitle);
-            // TODO:
+            var deckGroup = $(this).attr('data-group');
+            $('.bottom input[name="deckName"]').val(deckTitle);
+            loadUserDeckData(deckGroup, deckTitle);
         });
 
         $('.tab-list .btn:first').click();
@@ -488,11 +518,10 @@ $(document).ready(function() {
          * 덱 리셋 버튼 클릭
          **/
         $('#btnReset').click(function() {
-            $cardItems = $('.card-area .card-item');
-            for (var i = 0; i < $cardItems.length; i++) {
-                $($cardItems[i]).removeClass('selected');
-            }
-            $('.card-info .btnSelect').text('선택');
+            $('.card-info .selectedList').children('li').each(function() {
+                var cardId = Number($(this, $('.deselect')).attr('data-id'));
+                deselectCard(cardId);
+            });
         });
 
         /**
