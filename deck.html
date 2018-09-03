@@ -259,9 +259,9 @@ $(document).ready(function() {
         var gold = [];
         var normal = [];
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].tier == 'normal')
+            if (cards[i].tier === 'normal')
                 normal.push(cards[i]);
-            else if (cards[i].tier == 'gold')
+            else if (cards[i].tier === 'gold')
                 gold.push(cards[i]);
         }
         return gold.concat(normal);
@@ -283,7 +283,7 @@ $(document).ready(function() {
         pointLabel.text(cardInfo.point);
         pointLabel.show();
         var amountLabel = $card.children('.amount');
-        if (cardInfo.tier == 'gold') {
+        if (cardInfo.tier === 'gold') {
             $card.addClass('tier-gold');
             $card.attr('data-amount', 1);
             $card.attr('data-tier', 'gold');
@@ -306,7 +306,7 @@ $(document).ready(function() {
 
     var removeSelectedCard = (cardId) => {
         for(var i = 0; i < selectedCard.length; i++) {
-            if (cardId == selectedCard[i]) {
+            if (cardId === selectedCard[i]) {
                 selectedCard.splice(i, 1);
                 break;
             }
@@ -317,7 +317,7 @@ $(document).ready(function() {
 
     var deselectCard = (cardId) => {
         console.log('clicked', cardId);
-        if (cardId == -1)
+        if (cardId === -1)
             return;
         removeSelectedCard(cardId);
         addBoardCard(cardId);
@@ -328,7 +328,7 @@ $(document).ready(function() {
         var items = $parent.children('.card-item').sort(function(a, b) {
             var aTier = $(a).attr('data-tier');
             var bTier = $(b).attr('data-tier');
-            return (aTier == 'gold' && bTier != 'gold') ? -1 : (aTier != 'gold' && bTier == 'gold') ? 1 : 0;
+            return (aTier === 'gold' && bTier !== 'gold') ? -1 : (aTier !== 'gold' && bTier ==='gold') ? 1 : 0;
         });
         $parent.append(items);
     }
@@ -341,7 +341,7 @@ $(document).ready(function() {
         }else {
             amount -= 1;
             var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
-            if (amount == 1)
+            if (amount === 1)
                 $amount.text('');
             else
                 $amount.text('x'+amount);
@@ -468,12 +468,12 @@ $(document).ready(function() {
          $('.builder-board .card-area').on('click', '.card', function() {
             var $this = $(this);
             var cardId = Number($this.attr('data-id'));
-            if (cardId == -1)
+            if (cardId === -1)
                 return;
 
             var duplicateCount = 0;
             for (var i = 0; i < selectedCard.length; i++) {
-                if (cardId == selectedCard[i]) {
+                if (cardId === selectedCard[i]) {
                     duplicateCount++;
                 }
             }
