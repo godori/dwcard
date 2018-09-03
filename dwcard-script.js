@@ -78,6 +78,12 @@ var game = {
         tooltip[i].style.display = 'none';
       }
     })
+    // [button]
+    $('.menuBtn').on('click', (e) => {
+      if(confirm('게임을 종료하고 메뉴로 돌아가시겠습니까?')){
+        location.href = '/';
+      }
+    })
   },
   setRoundScore: () => {
     game._calculateScore('player');

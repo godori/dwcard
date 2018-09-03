@@ -8,6 +8,15 @@ html, body {
     background-color: rgb(245, 75, 103);
 }
 
+header button {
+    background-color: black;
+    font-size : 1.8em;
+    color: white;
+    padding: 10px;
+    width: 200px;
+    margin: 10px;
+} 
+
 .select-faction-layer{
     display:none;
     flex-direction: column;
