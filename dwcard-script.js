@@ -51,24 +51,34 @@ var game = {
     game.shuffle(game.playerHandCards);
     game.createCardHtml('player','tribe',game.playerHandCards);
     
-    // event handler
+    // Event Handler
+    // [card]
     $('.card').on('click', (e) => {
       game.moveCard(e.currentTarget);
       game.setRoundScore();
     })
     .on('mousemove', (e) => {
-      var tooltip = $('.tooltip');
+      var $tooltip = $('.tooltip');
       var card = e.currentTarget;
       var cardImg = card.style.backgroundImage;
+      const faction = $(card).data('faction');
+      const name = $(card).data('name');
+      const ability = $(card).data('ability');
+      const desc = $(card).data('desc');
+
       
-      for (var i=tooltip.length; i--;) {
-        var desc = tooltip[i];
+      for (var i=$tooltip.length; i--;) {
+        var tooltip = $tooltip[i];
         
-        desc.style.display = 'block';
-        desc.style.left = e.pageX + 'px';
-        desc.style.top = e.pageY + 'px';
-  
-        var dt = $(desc).find('.detail')[0];
+        tooltip.style.display = 'block';
+        tooltip.style.left = e.pageX + 'px';
+        tooltip.style.top =  (e.pageY - 150) + 'px';
+        
+        var dt = $(tooltip).find('tooltip-body .img')[0];
+        $(tooltip).find('tooltip-header .name').text(name);
+        $(tooltip).find('tooltip-body .text .desc').text(desc);
+        $(tooltip).find('tooltip-body .text .ability').text(ability);
+        
         dt.style.backgroundImage = cardImg;
       }
     })
@@ -175,7 +185,7 @@ var game = {
   // card 데이터를 html로 생성
   createCardHtml: (owner,faction, cards) => {
     console.log('>>> create card html');
-
+    
     $.each(cards, (idx, cardId) => {
       var $card = $('<div class="card"></div>');
       $card.addClass(owner + '-faction');
@@ -186,32 +196,37 @@ var game = {
       (owner === 'opponent') ? $card.data('isOpen', false) : $card.data('isOpen',true);
 
       game._setCardInfo($card);
-      game._setCardImage($card)
-      
+      game._decorateCard($card);
+      game._setCardImage($card);
+
       // card-line에 배치
       $('.' + owner + '-area .card-hand').append($card);  
     });
+  },
+  _decorateCard: ($card) => {
+    if(!$card.data('isOpen'))
+      return;
+
+      const point = $card.data('point');
+      var $point = $('<div class="point"></div>').text(point);
+      $card.append($point);
+      
+      const suffix = ($card.data('tier') === 'gold') ? '-gold' : '-normal';
+      $card.addClass('tier' + suffix);
   },
   _setCardInfo: ($card) => {
     if(!$card.data('isOpen'))
       return;
 
+    // TODO: array data to card data at once
     const cardId = $card.data('cardId');
     const cardInfo = game.cardData[cardId-1];
-    
-    // set point info
-    const point = cardInfo.point;
-    $card.data('point',point);
-    var $point = $('<div class="point"></div>');
-    $point.text(point);
-    $card.append($point);
-    
-    // set tier info
-    const tier = cardInfo.tier;
-    $card.data('tier',tier);
-    
-    // set card border by tier
-    (tier === 'gold') ? $card.addClass('tier-gold') : $card.addClass('tier-normal')
+    $card.data('faction', cardInfo.group);
+    $card.data('name', cardInfo.name);
+    $card.data('ability', cardInfo.ability);
+    $card.data('desc', cardInfo.desc);
+    $card.data('point', cardInfo.point);
+    $card.data('tier', cardInfo.tier);
   },
   _setCardImage: (card) => {
     const cardImg = 'img/card/min/' + card.data('cardId') + '.png';
