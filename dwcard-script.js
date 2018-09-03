@@ -1,33 +1,6 @@
-var cardInfoList = {};
-var addCardInfo = function (id, point, tier, name, desc) {
-  cardInfoList[id] = { id: id, point: point, tier: tier, name: name, desc: desc };
-};
-addCardInfo(1, 3, 'gold', '다이나', '마을 최고의 샤먼. 화이트의 엄마');
-addCardInfo(2, 3, 'gold', '화이트', '주인공');
-addCardInfo(3, 2, 'silver', '소년', '어리다');
-addCardInfo(4, 2, 'silver', '3번', '설명');
-addCardInfo(5, 1, 'bronze', '여우', '파이어폭스');
 
 $(document).ready(function () {
   console.log('>>> dw card script init');
-
-  $('.card .point').hide();
-  $('.card .desc').hide();
-  $('.game-board .card').hover(function () {
-    if ($(this).hasClass('close')) {
-      return;
-    }
-    var idx = $(this).data('cardValue');
-    console.log(cardInfoList[idx]);
-    var cardInfo = cardInfoList[idx];
-    var descdiv = $(this).children('.desc');
-
-    descdiv.html('<strong>' + cardInfo.name + '</strong><br>' + cardInfo.desc + '<br>포인트 : ' + cardInfo.point);
-    $(this).children('.desc').show();
-  }, function () {
-    $(this).children('.desc').hide();
-  });
-
   game.init();
 });
 
