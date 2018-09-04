@@ -40,7 +40,7 @@ __Card Play__
 - [x] create card element and set data
 - [x] calculate card points
 - [ ] opponent auto play (simple)
-- [ ] display card description when hover
+- [x] display card description when hover
 - [ ] draw card
 - [ ] pass turn
 - [ ] displaying round status
