@@ -8,6 +8,9 @@
   <script type="text/javascript" src="dwcard-script.js"></script>
 </head>
 <body>
+  <header>
+      <button class="menuBtn">MENU</button>
+  </header>
   <div class="board">
     <div class="half-board opponent-board">
       <side class="leader-area">
@@ -62,7 +65,17 @@
 
 </body>
 <span class="tooltip">
-  <div class="detail"></div>
+  <tooltip-header>
+    <div class="point"></div>
+    <div class="name"></div>
+  </tooltip-header>
+  <tooltip-body>
+    <div class="item img"></div>
+    <div class="item text">
+      <div class="desc"></div>
+      <div class="ability"></div>
+    </div>
+  </tooltip-body>
 </span>
 
 <aside class="select-faction-layer">

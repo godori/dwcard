@@ -8,6 +8,15 @@ html, body {
     background-color: rgb(245, 75, 103);
 }
 
+header button {
+    background-color: black;
+    font-size : 1.8em;
+    color: white;
+    padding: 10px;
+    width: 200px;
+    margin: 10px;
+} 
+
 .select-faction-layer{
     display:none;
     flex-direction: column;
@@ -235,10 +244,28 @@ main {
     width:200px;
     height:300px;
 }
-.tooltip .detail {
-    display: inline-block;
-    width:100%;
-    height:100%;
+tooltip-body {
+    width: 400px;
+    height: 300px;    
+    display: flex;
+    flex-direction: row;
+}
+tooltip-body .item{
+    width: 50%;
+    height: 100%;
+}
+
+tooltip-body .text{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #222;
+    background-size: 100% 100%;
+    color: #fff;
+}
+tooltip-body .img {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
