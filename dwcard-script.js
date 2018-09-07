@@ -193,7 +193,7 @@ var game = {
       $card.data('cardId', cardId);
 
       // 카드 위치별 close/open
-      (owner === 'opponent') ? $card.data('isOpen', false) : $card.data('isOpen',true);
+      $card.data('isOpen', (owner === 'opponent'));
 
       game._setCardInfo($card);
       game._decorateCard($card);
@@ -207,12 +207,12 @@ var game = {
     if(!$card.data('isOpen'))
       return;
 
-      const point = $card.data('point');
-      var $point = $('<div class="point"></div>').text(point);
-      $card.append($point);
+    const point = $card.data('point');
+    var $point = $('<div class="point"></div>').text(point);
+    $card.append($point);
       
-      const suffix = ($card.data('tier') === 'gold') ? '-gold' : '-normal';
-      $card.addClass('tier' + suffix);
+    const suffix = ($card.data('tier') === 'gold') ? '-gold' : '-normal';
+    $card.addClass('tier' + suffix);
   },
   _setCardInfo: ($card) => {
     if(!$card.data('isOpen'))
