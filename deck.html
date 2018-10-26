@@ -145,9 +145,9 @@
             <h3>Deck List</h3>
             <ul id="userDeckList">
                 <li><button class="create-deck">New Deck</button></li>
-                <li><button>1번 덱</button></li>
+                <!-- <li><button>1번 덱</button></li>
                 <li><button>2번 덱</button></li>
-                <li><button>3번 덱</button></li>
+                <li><button>3번 덱</button></li> -->
             </ul>
         </div>
 
@@ -169,7 +169,9 @@
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
         <div class="area card-info">
-            <div class="info-item card"></div>
+            <div class="card-detail" style="min-height:130px;">
+                    <div class="info-item card"></div>
+            </div>
             <div class="info-item desc">
                 <h3 class="name">?</h3>
             </div>
@@ -184,8 +186,8 @@
         </div>
     </div>
 <script>
-    var cardData = [];
-    var selectedCard = [];
+    let cardData = [];
+    let selectedCard = [];
     const maxSelectedCount = 10;
     const magicWordForTrim = '-|-';
     const cookieDeckDataHead = 'deckData_';
@@ -206,12 +208,11 @@
         'death' : 'b',
         'nature': 'c'
     }
-
-    var userDeckList = {
+    let userDeckList = {
         titleList: [],
         deckList: {}
     };
-$(document).ready(function() {
+$(function() {
     $.ajaxSetup({ cache: false });
     
     /**
@@ -228,12 +229,12 @@ $(document).ready(function() {
     /**
      * json에서 전체 카드 데이터 불러오기
      **/
-    var loadCardData = () => {
+    const loadCardData = () => {
         return new Promise((resolve, reject) => {
             $.getJSON('./dwcard-data.json').done((json) => {
                 resolve(json);
             }).fail((jqxhr, textStatus, error) => {
-                var err = textStatus + ", " + error;
+                const err = textStatus + ", " + error;
                 reject(err);
             });
         });
@@ -242,9 +243,9 @@ $(document).ready(function() {
     /**
      * 진영별 카드 데이터 가져오기
      **/
-    var getCardData = (group) => {
-        var data = [];
-        for (var i = 0; i < cardData.length; i++) {
+    const getCardData = (group) => {
+        let data = [];
+        for (let i = 0; i < cardData.length; i++) {
             if (cardData[i].group != group && cardData[i].group != 'neutral')
                 continue;
             data.push(cardData[i]);
@@ -255,10 +256,10 @@ $(document).ready(function() {
     /**
      * 티어 별 정렬
      **/
-    var sortByTier = (cards) => {
-        var gold = [];
-        var normal = [];
-        for (var i = 0; i < cards.length; i++) {
+    const sortByTier = (cards) => {
+        let gold = [];
+        let normal = [];
+        for (let i = 0; i < cards.length; i++) {
             if (cards[i].tier === 'normal')
                 normal.push(cards[i]);
             else if (cards[i].tier === 'gold')
@@ -270,19 +271,19 @@ $(document).ready(function() {
     /**
      * 카드 엘리먼트 생성
      **/
-    var generateCardElement = (cardInfo) => {
-        var cardId = cardInfo.id;
-        var imgUrl = 'img/card/min/' + cardId + '.png';
-        var $card = $('<div class="card-item card"><div class="point"></div><div class="amount"></div></div>');
+    const generateCardElement = (cardInfo) => {
+        const cardId = cardInfo.id;
+        const imgUrl = 'img/card/min/' + cardId + '.png';
+        let $card = $('<div class="card-item card"><div class="point"></div><div class="amount"></div></div>');
         $card.attr('data-id', cardId);
         $card.css({
             "background": "url(" + imgUrl + ")",
             "background-size": "100% 100%",
         });
-        var pointLabel = $card.children('.point');
+        let pointLabel = $card.children('.point');
         pointLabel.text(cardInfo.point);
         pointLabel.show();
-        var amountLabel = $card.children('.amount');
+        let amountLabel = $card.children('.amount');
         if (cardInfo.tier === 'gold') {
             $card.addClass('tier-gold');
             $card.attr('data-amount', 1);
@@ -297,15 +298,15 @@ $(document).ready(function() {
         return $card;
     };
 
-    var addSelectedCard = (cardId) => {
+    const addSelectedCard = (cardId) => {
         selectedCard.push(cardId);
-        var data = cardData[cardId-1];
+        const data = cardData[cardId-1];
         $('ul.selectedList').append('<li data-id="'+cardId+'"><span>'+data.point+' '+data.name+'</span><button class="deselect" data-id="'+cardId+'">X</button></li>');
         // TODO: jquery sort children by tier
     };
 
-    var removeSelectedCard = (cardId) => {
-        for(var i = 0; i < selectedCard.length; i++) {
+    const removeSelectedCard = (cardId) => {
+        for(let i = 0; i < selectedCard.length; i++) {
             if (cardId === selectedCard[i]) {
                 selectedCard.splice(i, 1);
                 break;
@@ -315,7 +316,7 @@ $(document).ready(function() {
         $('.selectedList li[data-id="'+cardId+'"]:first').remove();
     };
 
-    var deselectCard = (cardId) => {
+    const deselectCard = (cardId) => {
         console.log('clicked', cardId);
         if (cardId === -1)
             return;
@@ -323,24 +324,24 @@ $(document).ready(function() {
         addBoardCard(cardId);
     };
 
-    var sortBoardCard = () => {
-        var $parent = $('.builder-board .card-area');
-        var items = $parent.children('.card-item').sort(function(a, b) {
+    const sortBoardCard = () => {
+        let $parent = $('.builder-board .card-area');
+        let $items = $parent.children('.card-item').sort(function(a, b) {
             var aTier = $(a).attr('data-tier');
             var bTier = $(b).attr('data-tier');
             return (aTier === 'gold' && bTier !== 'gold') ? -1 : (aTier !== 'gold' && bTier ==='gold') ? 1 : 0;
         });
-        $parent.append(items);
+        $parent.append($items);
     }
 
-    var subtractBoardCard = (cardId) => {
-        var $card = $('.builder-board .card-item[data-id="'+cardId+'"]');
-        var amount = Number($card.attr('data-amount'));
+    const subtractBoardCard = (cardId) => {
+        let $card = $('.builder-board .card-item[data-id="'+cardId+'"]');
+        let amount = Number($card.attr('data-amount'));
         if (amount <= 1) {
             $('.card-area .card-item[data-id="'+cardId+'"]').remove();
         }else {
             amount -= 1;
-            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            let $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
             if (amount === 1)
                 $amount.text('');
             else
@@ -349,71 +350,72 @@ $(document).ready(function() {
         }
     };
 
-    var addBoardCard = (cardId) => {
-        var $card = $('.builder-board .card-area .card-item[data-id="'+cardId+'"]');
+    const addBoardCard = (cardId) => {
+        let $card = $('.builder-board .card-area .card-item[data-id="'+cardId+'"]');
         if ($card.length == 0) {
             $card = generateCardElement(cardData[cardId-1]);
-            var amount = 1;
-            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            let amount = 1;
+            let $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
             $amount.text('');
             $card.attr('data-amount', amount);
             $('.builder-board .card-area').append($card);
             sortBoardCard();
         }else {
-            var amount = Number($card.attr('data-amount'));
+            let amount = Number($card.attr('data-amount'));
             amount += 1;
-            var $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
+            let $amount = $('.card-area .card-item[data-id="'+cardId+'"] .amount');
             $amount.text('x'+amount);
             $card.attr('data-amount', amount);
         }
     };
 
-    var clearSelectedCard = () => {
+    const clearSelectedCard = () => {
         selectedCard = [];
+        $('.card-info .selectedList').html('');
     };
 
-    var updateSidebar = (deckTitleList) => {
-        var $userDeckList = $('#userDeckList');
+    const updateSidebar = (deckTitleList) => {
+        let $userDeckList = $('#userDeckList');
         $userDeckList.html('');
         $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
-        for (var i = 0; i < deckTitleList.length; i++) {
-            var group = headerGroupNameSwapper[deckTitleList[i][0]];
-            var korGroup = korGroupName[group];
-            var deckTitle = deckTitleList[i].substr(1);
+        for (let i = 0; i < deckTitleList.length; i++) {
+            const group = headerGroupNameSwapper[deckTitleList[i][0]];
+            const korGroup = korGroupName[group];
+            const deckTitle = deckTitleList[i].substr(1);
             $userDeckList.append('<li><button class="user-deck" data-group="'+group+'" data-title="'+deckTitle+'">['+korGroup+']'+deckTitle+'</button></li>');
         }
     }
 
-    var loadUserDeckData = (deckGroup, deckTitle) => {
-        var header = headerGroupNameSwapper[deckGroup];
-        var deckDataCookieName = cookieDeckDataHead + header + deckTitle;
+    const loadUserDeckData = (deckGroup, deckTitle) => {
+        const header = headerGroupNameSwapper[deckGroup];
+        const deckDataCookieName = cookieDeckDataHead + header + deckTitle;
         console.log('사용자 덱 로드 ' + deckDataCookieName);
-        var txtDeckCardList = $.cookie(deckDataCookieName);
+        let txtDeckCardList = $.cookie(deckDataCookieName);
         if (typeof txtDeckCardList === 'undefined') {
             console.log('덱 정보를 불러올 수 없습니다.');
             return undefined;
         }
-        var deckCardList = txtDeckCardList.split(',');
+        let deckCardList = txtDeckCardList.split(',');
         console.log(deckCardList);
         $('.builder-board .tab-list .btn[data-group="'+deckGroup+'"]').click();
-        for (var i = 0; i < deckCardList.length; i++) {
+        for (let i = 0; i < deckCardList.length; i++) {
             $('.builder-board .card-area .card-item[data-id="'+deckCardList[i]+'"]').click();
         }
     }
 
-    var loadUserDeckList = () => {
-        var userDeckTitle = $.cookie('userDeckTitleList');
+    const loadUserDeckList = () => {
+        let userDeckTitle = $.cookie('userDeckTitleList');
         if (typeof userDeckTitle === 'undefined') {
             return;
         }
-        console.log('cookie: '+userDeckTitle);
-        var userDeckTitleList = userDeckTitle.split(magicWordForTrim);
+        console.log('load cookie: '+userDeckTitle);
+        let userDeckTitleList = userDeckTitle.split(magicWordForTrim);
         console.log('userDeckTitleList');
         updateSidebar(userDeckTitleList);
         // MARK: save할 때는 encodeURIComponent를 걸자.
     };
 
-    var saveDeck = (name, cardList) => {
+    const saveDeck = (name, cardList) => {
         // $.cookie('name', 'value', { expires: 7, path: '/' });
         // $.cookie('deckList', 'sadf');
     };
@@ -425,15 +427,13 @@ $(document).ready(function() {
         /**
          * 진영 탭 버튼 클릭 
          **/
-        $('.tab-list .btn').click(function(){
-            var group = $(this).data('group');
-            var data = sortByTier(getCardData(group));
-            console.log(group);
-            // console.log(data);
-            var $cardArea = $('.builder-board .card-area');
+        $('.tab-list .btn').click(function() {
+            const group = $(this).data('group');
+            const data = sortByTier(getCardData(group));
+            let $cardArea = $('.builder-board .card-area');
             $cardArea.html('');
-            for (var key in data) {
-                var $newCard = generateCardElement(data[key]);
+            for (const key in data) {
+                let $newCard = generateCardElement(data[key]);
                 $cardArea.append($newCard);
             }
             clearSelectedCard();
@@ -454,11 +454,10 @@ $(document).ready(function() {
          * 빌더 보드에서 카드 mouseover
          **/
         $('.builder-board .card-area').on('mouseover', '.card', function() {
-            var $card = $(this);
-            var cardId = $card.attr('data-id');
-            console.log(cardData[cardId-1]);
-            $('.area.card-info .card').replaceWith($card.clone());
-            $('.area.card-info .card').removeClass('selected');
+            let $card = $(this);
+            const cardId = $card.attr('data-id');
+            $('.area.card-info .card-detail .card').replaceWith($card.clone());
+            $('.area.card-info .card-detail .card').removeClass('selected');
             $('.area.card-info .desc .name').text(cardData[cardId-1].name);
         });
 
@@ -466,25 +465,22 @@ $(document).ready(function() {
          * 빌더 보드에서 카드 선택
          **/
          $('.builder-board .card-area').on('click', '.card', function() {
-            var $this = $(this);
-            var cardId = Number($this.attr('data-id'));
+            let $this = $(this);
+            const cardId = Number($this.attr('data-id'));
             if (cardId === -1)
                 return;
-
-            var duplicateCount = 0;
-            for (var i = 0; i < selectedCard.length; i++) {
+            let duplicateCount = 0;
+            for (let i = 0; i < selectedCard.length; i++) {
                 if (cardId === selectedCard[i]) {
                     duplicateCount++;
                 }
             }
-            var cardAmount = cardTierAmount[cardData[cardId-1].tier];
+            const cardAmount = cardTierAmount[cardData[cardId-1].tier];
             if (duplicateCount < cardAmount) {
                 addSelectedCard(cardId);
-
                 subtractBoardCard(cardId);
-                
             }else {
-                console.log('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
+                console.error('ERROR: 동일 카드 추가 선택 불가. cardId: ' + cardId);
             }
         });
 
@@ -492,8 +488,8 @@ $(document).ready(function() {
          * 카드 선택 취소
          **/
         $('.selectedList').on('click', '.deselect', function() {
-            var $this = $(this);
-            var cardId = Number($this.attr('data-id'));
+            let $this = $(this);
+            let cardId = Number($this.attr('data-id'));
             deselectCard(cardId);
         });
         
@@ -501,8 +497,8 @@ $(document).ready(function() {
          * 사용자 덱 선택
          **/
         $('#userDeckList').on('click', 'button.user-deck', function() {
-            var deckTitle = $(this).attr('data-title');
-            var deckGroup = $(this).attr('data-group');
+            let deckTitle = $(this).attr('data-title');
+            let deckGroup = $(this).attr('data-group');
             $('.bottom input[name="deckName"]').val(deckTitle);
             loadUserDeckData(deckGroup, deckTitle);
         });
@@ -519,7 +515,7 @@ $(document).ready(function() {
          **/
         $('#btnReset').click(function() {
             $('.card-info .selectedList').children('li').each(function() {
-                var cardId = Number($(this, $('.deselect')).attr('data-id'));
+                const cardId = Number($(this, $('.deselect')).attr('data-id'));
                 deselectCard(cardId);
             });
         });
@@ -528,18 +524,18 @@ $(document).ready(function() {
          * 덱 저장 버튼 클릭
          **/
         $('#btnDeckSave').click(function() {
-            var deckName = $('.bottom input[name="deckName"]').val();
+            let deckName = $('.bottom input[name="deckName"]').val();
             if (deckName.length <= 0) {
                 alert('덱 이름을 지정해야 합니다.');
                 return;
             }
             // TODO: 쿠키에서 가져온 덱 이름중 중복 있는지 체크
             if (selectedCard.length < maxSelectedCount) {
-                alert('카드를 ' + maxSelectedCount + '장 모두 선택 바랍니다.');
+                alert('카드를 ' + maxSelectedCount + '장 모두 선택 바랍니다.(현재 '+selectedCard.length+'장 선택)');
                 return;
             }
+            // TODO: 쿠키에 저장
         });
-
         
     }).catch((error) => {
         console.error(error);
