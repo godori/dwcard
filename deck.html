@@ -144,7 +144,6 @@
         <div class="area deck-list">
             <h3>Deck List</h3>
             <ul id="userDeckList">
-                <!-- <li><button class="create-deck">New Deck</button></li> -->
                 <!-- <li><button>N번 덱</button></li> -->
             </ul>
         </div>
@@ -378,7 +377,6 @@ $(function() {
     const updateSidebar = (deckTitleList) => {
         let $userDeckList = $('#userDeckList');
         $userDeckList.html('');
-        // $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
         for (let i = 0; i < deckTitleList.length; i++) {
             const group = headerGroupNameSwapper[deckTitleList[i][0]];
             const korGroup = korGroupName[group];
