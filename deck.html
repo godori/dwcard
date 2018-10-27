@@ -188,7 +188,6 @@
     let cardData = [];
     let selectedCard = [];
     const maxSelectedCount = 10;
-    const magicWordForTrim = '-|-';
     const cardTierAmount = {
         'normal' : 3,
         'gold': 1
@@ -223,7 +222,7 @@
     const COOKIE_USER_DECK_TITLE_LIST = 'userDeckTitleList';
     const COOKIE_EXPIRES = 7;
     const COOKIE_DECK_DATA_HEAD = 'deckData_';
-
+    const COOKIE_DECK_LIST_MAGICWORD = '-|-';
 $(function() {
     $.ajaxSetup({ cache: false });
     let $deckNameTextBox = $('.bottom input[name="deckName"]');
@@ -411,12 +410,12 @@ $(function() {
             return;
         }
         console.log('load cookie `userDeckTitle` : '+userDeckTitle);
-        userDeckList.titleList = userDeckTitle.split(magicWordForTrim);
+        userDeckList.titleList = userDeckTitle.split(COOKIE_DECK_LIST_MAGICWORD);
         updateSidebar(userDeckList.titleList);
     };
 
     const saveUserDeckList = () => {
-        $.cookie(COOKIE_USER_DECK_TITLE_LIST, userDeckList.titleList.join(magicWordForTrim), { expires: COOKIE_EXPIRES, path:'/' });
+        $.cookie(COOKIE_USER_DECK_TITLE_LIST, userDeckList.titleList.join(COOKIE_DECK_LIST_MAGICWORD), { expires: COOKIE_EXPIRES, path:'/' });
     }
 
     const saveDeck = (deckTitle, deckGroup, cardList) => {
