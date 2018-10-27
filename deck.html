@@ -451,7 +451,6 @@ $(function() {
     }
 
     loadCardData().then((json) => {
-        console.log('loadCardData');
         cardData = json[0].cardData;
         console.log(cardData);
 
@@ -523,7 +522,6 @@ $(function() {
             let deckTitle = $(this).attr('data-title');
             let deckGroup = $(this).attr('data-group');
             loadUserDeckData(deckGroup, deckTitle);
-            console.log('$deckNAmeTextBox: ' + deckTitle);
             $deckNameTextBox.val(deckTitle);
         });
 
