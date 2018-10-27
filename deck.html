@@ -144,10 +144,8 @@
         <div class="area deck-list">
             <h3>Deck List</h3>
             <ul id="userDeckList">
-                <li><button class="create-deck">New Deck</button></li>
-                <!-- <li><button>1번 덱</button></li>
-                <li><button>2번 덱</button></li>
-                <li><button>3번 덱</button></li> -->
+                <!-- <li><button class="create-deck">New Deck</button></li> -->
+                <!-- <li><button>N번 덱</button></li> -->
             </ul>
         </div>
 
@@ -162,9 +160,10 @@
                 <!-- <div class="card-item card"></div> -->
             </div>
             <div class="bottom">
-                <button id="btnReset">선택 초기화</button><br>
                 <input type="text" value="" name="deckName" placeholder="덱 이름">
                 <button id="btnDeckSave">저장</button>
+                <button id="btnReset">선택 초기화</button>
+                <button id="btnDeckRemove">덱 삭제</button>
             </div>
         </div>
         <!-- left side: 카드 상세 정보 영역 -->
@@ -227,6 +226,7 @@
 
 $(function() {
     $.ajaxSetup({ cache: false });
+    let $deckNameTextBox = $('.bottom input[name="deckName"]');
     /**
      * json에서 전체 카드 데이터 불러오기
      **/
@@ -328,8 +328,8 @@ $(function() {
     const sortBoardCard = () => {
         let $parent = $('.builder-board .card-area');
         let $items = $parent.children('.card-item').sort(function(a, b) {
-            var aTier = $(a).attr('data-tier');
-            var bTier = $(b).attr('data-tier');
+            const aTier = $(a).attr('data-tier');
+            const bTier = $(b).attr('data-tier');
             return (aTier === 'gold' && bTier !== 'gold') ? -1 : (aTier !== 'gold' && bTier ==='gold') ? 1 : 0;
         });
         $parent.append($items);
@@ -373,12 +373,13 @@ $(function() {
     const clearSelectedCard = () => {
         selectedCard = [];
         $('.card-info .selectedList').html('');
+        $deckNameTextBox.val('');
     };
 
     const updateSidebar = (deckTitleList) => {
         let $userDeckList = $('#userDeckList');
         $userDeckList.html('');
-        $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
+        // $userDeckList.append('<li><button class="create-deck">New Deck</button></li>');
         for (let i = 0; i < deckTitleList.length; i++) {
             const group = headerGroupNameSwapper[deckTitleList[i][0]];
             const korGroup = korGroupName[group];
@@ -412,38 +413,46 @@ $(function() {
         console.log('load cookie `userDeckTitle` : '+userDeckTitle);
         userDeckList.titleList = userDeckTitle.split(magicWordForTrim);
         updateSidebar(userDeckList.titleList);
-        // MARK: save할 때는 encodeURIComponent를 걸자.
     };
 
-    const saveUserDeckList = () => {// encodeURIComponent
+    const saveUserDeckList = () => {
         $.cookie(COOKIE_USER_DECK_TITLE_LIST, userDeckList.titleList.join(magicWordForTrim), { expires: COOKIE_EXPIRES, path:'/' });
     }
 
     const saveDeck = (deckTitle, deckGroup, cardList) => {
         const header = headerGroupNameSwapper[deckGroup];
         const deckDataCookieName = COOKIE_DECK_DATA_HEAD + header + deckTitle;
-        const deckTitleCookieName = header+deckTitle;
-        console.log('사용자 덱 저장: ' + deckDataCookieName);
-        $.cookie(deckDataCookieName, cardList.join(','), { expires: COOKIE_EXPIRES, path:'/' });
-        let isExist = false;
-        for (const title of userDeckList.titleList) {
-            if (title === deckTitleCookieName) {
-                isExist = true;
-                break;
+        const deckTitleWithHeader = header+deckTitle;
+
+        let isExist = userDeckList.titleList.indexOf(deckTitleWithHeader) !== -1;
+        if (isExist) {
+            if (!confirm(`'${deckTitle}'덱을 덮어씌우겠습니까?`)) {
+                return;
             }
+        }else {
+            userDeckList.titleList.push(deckTitleWithHeader);
         }
-        if (!isExist) {
-            userDeckList.titleList.push(deckTitleCookieName);
-        }
+        $.cookie(deckDataCookieName, cardList.join(','), { expires: COOKIE_EXPIRES, path:'/' });        
         saveUserDeckList();
-        console.log('saved');
-        // $.cookie('werty', 'ok', { expires: 7, path: '/', domain: 'werty.co.kr', secure: false });
-        // $.cookie('name', 'value', { expires: 7, path: '/' });
-        // $.cookie('deckList', 'sadf');
+        alert(`'${deckTitle}' 덱을 저장했습니다.`);
     };
 
+    const removeDeck = (deckTitle, deckGroup) => {
+        const header = headerGroupNameSwapper[deckGroup];
+        const deckTitleWithHeader = header+deckTitle;
+        const deckDataCookieName = COOKIE_DECK_DATA_HEAD + header + deckTitle;
+        let idx = userDeckList.titleList.indexOf(deckTitleWithHeader);
+        if (idx !== -1 && confirm(`'${deckTitle}'덱을 삭제하시겠습니까?`)) {
+            userDeckList.titleList.splice(idx, 1);
+            saveUserDeckList();
+            $.removeCookie(deckDataCookieName);
+            return true;
+        }
+        return false;
+    }
 
     loadCardData().then((json) => {
+        console.log('loadCardData');
         cardData = json[0].cardData;
         console.log(cardData);
 
@@ -463,14 +472,6 @@ $(function() {
             $('.card-area .card-item:first').mouseover();
             $('.tab-list .btn.selected').removeClass('selected');
             $(this).addClass('selected');
-        });
-
-        /**
-         * 새 덱 만들기 클릭
-         **/
-        $('.create-deck').click(function() {
-            // create new deck.
-            // TODO: show 
         });
 
         /**
@@ -522,8 +523,9 @@ $(function() {
         $('#userDeckList').on('click', 'button.user-deck', function() {
             let deckTitle = $(this).attr('data-title');
             let deckGroup = $(this).attr('data-group');
-            $('.bottom input[name="deckName"]').val(deckTitle);
             loadUserDeckData(deckGroup, deckTitle);
+            console.log('$deckNAmeTextBox: ' + deckTitle);
+            $deckNameTextBox.val(deckTitle);
         });
 
         $('.tab-list .btn:first').click();
@@ -541,28 +543,35 @@ $(function() {
                 const cardId = Number($(this, $('.deselect')).attr('data-id'));
                 deselectCard(cardId);
             });
+            $deckNameTextBox.val('');
         });
 
         /**
          * 덱 저장 버튼 클릭
          **/
         $('#btnDeckSave').click(function() {
-            const deckTitle = $('.bottom input[name="deckName"]').val();
+            const deckTitle = $deckNameTextBox.val();
             const deckGroup = $('.tab-list .btn.selected').attr('data-group');
             if (deckTitle.length <= 0) {
                 alert('덱 이름을 지정해야 합니다.');
                 return;
             }
-            // TODO: 쿠키에서 가져온 덱 이름중 중복 있는지 체크
             if (selectedCard.length < maxSelectedCount) {
-                alert('카드를 ' + maxSelectedCount + '장 모두 선택 바랍니다.(현재 '+selectedCard.length+'장 선택)');
+                alert(`카드를 ${maxSelectedCount}장 모두 선택 바랍니다.(현재 ${selectedCard.length}장 선택)`);
                 return;
             }
-            // TODO: 쿠키에 저장
             saveDeck(deckTitle, deckGroup, selectedCard);
-            
+            updateSidebar(userDeckList.titleList);
         });
-        
+
+        $('#btnDeckRemove').click(function() {
+            const deckTitle = $deckNameTextBox.val();
+            const deckGroup = $('.tab-list .btn.selected').attr('data-group');
+            if (removeDeck(deckTitle, deckGroup)) {
+                updateSidebar(userDeckList.titleList);
+                $('#btnReset').click();
+            }
+        });
     }).catch((error) => {
         console.error(error);
     });
