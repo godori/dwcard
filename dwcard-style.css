@@ -1,289 +1,301 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
-html, body {
-    height:100%;
-    background-color: rgb(245, 75, 103);
+html,
+body {
+  height: 100%;
+  background-color: rgb(245, 75, 103);
 }
 
 header button {
-    background-color: black;
-    font-size : 1.8em;
-    color: white;
-    padding: 10px;
-    width: 200px;
-    margin: 10px;
-} 
+  background-color: black;
+  font-size: 1.8em;
+  color: white;
+  padding: 10px;
+  width: 200px;
+  margin: 10px;
+}
 
-.select-faction-layer{
-    display:none;
-    flex-direction: column;
-    align-items: center;
-    position:absolute;
-    height:100%;
-    width:100%;
-    background-color:rgb(94, 76, 88);
-    /* opacity: 0.7; */
+.select-faction-layer {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(94, 76, 88);
+  /* opacity: 0.7; */
 }
 .select-faction-layer header {
-    color: white;
-    text-align: center;
-    font-size: 3em;
-    margin: 50px 0px 50px 0px;
+  color: white;
+  text-align: center;
+  font-size: 3em;
+  margin: 50px 0px 50px 0px;
 }
 
 .select-faction-layer .desc {
-    color: white;
-    text-align: center;
-    font-size: 2.6em;
+  color: white;
+  text-align: center;
+  font-size: 2.6em;
 }
 
 .board {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .half-board {
-    display: flex;
-    flex-direction: row;
-    border: 3px solid palegreen;
-    margin: 5px;
-    padding : 5px;
+  display: flex;
+  flex-direction: row;
+  border: 3px solid palegreen;
+  margin: 5px;
+  padding: 5px;
 }
 
 side {
-    flex-basis: 100px;
-    flex-shrink: 1;
+  flex-basis: 100px;
+  flex-shrink: 1;
 }
 main {
-    flex : 1 0 auto;
+  flex: 1 0 auto;
 }
 
 .leader-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-basis: 250px;
-    background-color: #daa520;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 250px;
+  background-color: #daa520;
 }
 
 .leader {
-    display: inline-block;
-    /* margin-left:10px; */
-    margin : 10px;
-    width: 150px;
-    height: 150px;
-    background-color: #fff0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    /* background-size: 100% 100%; */
-    text-align: center;
-    border-radius: 5px;
-    box-shadow: 5px 5px 50px #400000;
-    position: relative;
-    border-width: 5px;
-    border-color: #fff0;
-    border-style: solid;
+  display: inline-block;
+  /* margin-left:10px; */
+  margin: 10px;
+  width: 150px;
+  height: 150px;
+  background-color: #fff0;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* background-size: 100% 100%; */
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 5px 5px 50px #400000;
+  position: relative;
+  border-width: 5px;
+  border-color: #fff0;
+  border-style: solid;
 }
-.leader-name{
-    font-size : 1.3em;
+.leader-name {
+  font-size: 1.3em;
 }
-.score-area{
-    display: flex;
-    flex-direction: row;
-    
+.score-area {
+  display: flex;
+  flex-direction: row;
 }
-.score{
-    font-size: 3em;
-    padding: 0 10px 0 10px;
+.score {
+  font-size: 3em;
+  padding: 0 10px 0 10px;
 }
 
-.deck-area{
-    /* border: 1px solid aquamarine; */
-    background-color: rgb(81, 104, 155);
-    flex-basis : 200px;
-    /* padding: 20px; */
+.deck-area {
+  /* border: 1px solid aquamarine; */
+  background-color: rgb(81, 104, 155);
+  flex-basis: 200px;
+  /* padding: 20px; */
 }
 
 /* each quater of the play bord */
 .opponent-area {
-    background: brown
-    /* border: 3px solid #00f; */
+  background: brown;
+  /* border: 3px solid #00f; */
 }
- .card-hand{
-    /* background: skyblue; */
-    border: 1px solid rgb(36, 36, 36);
-    margin: 3px;
+.card-hand {
+  /* background: skyblue; */
+  border: 1px solid rgb(36, 36, 36);
+  margin: 3px;
 }
-.card-play{
-    /* background: darkblue; */
-    border: 1px solid rgb(36, 36, 36);
-    margin: 3px;
+.card-play {
+  /* background: darkblue; */
+  border: 1px solid rgb(36, 36, 36);
+  margin: 3px;
 }
 
 .player-area {
-    background: purple;
-    /* border: 3px solid #f00; */
+  background: purple;
+  /* border: 3px solid #f00; */
 }
 
-.player-area > .card-play{
-    /* background: darkred; */
-    border: 1px solid pink;
+.player-area > .card-play {
+  /* background: darkred; */
+  border: 1px solid pink;
 }
 
-.player-area > .card-hand{
-    /* background: pink; */
-    border: 1px solid pink;
+.player-area > .card-hand {
+  /* background: pink; */
+  border: 1px solid pink;
 }
 
 .score-borad {
-    background-color: #C99789;
-    width:15%;
-    height:100%;
-    float:left;
+  background-color: #c99789;
+  width: 15%;
+  height: 100%;
+  float: left;
 }
 
-.card-line{
-    height:50%;
-    text-align: center;
+.card-line {
+  height: 50%;
+  text-align: center;
 }
 
 .card {
-    display: inline-block;
-    margin-left:10px;
-    width: 80px;
-    height: 120px;
-    background-color: #fff0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
-    border-radius: 5px;
-    box-shadow: 5px 5px 50px #400000;
-    position: relative;
-    border-width: 5px;
-    border-color: #fff0;
-    border-style: solid;
+  display: inline-block;
+  margin-left: 10px;
+  width: 80px;
+  height: 120px;
+  background-color: #fff0;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 5px 5px 50px #400000;
+  position: relative;
+  border-width: 5px;
+  border-color: #fff0;
+  border-style: solid;
 }
 
 .card.tier-gold {
-    border-style: solid;
-    border-color:#daa520;
+  border-style: solid;
+  border-color: #daa520;
 }
-.card.tier-silver, .card.tier-normal {
-    border-style: solid;
-    border-color:#e9dccf;
+.card.tier-silver,
+.card.tier-normal {
+  border-style: solid;
+  border-color: #e9dccf;
 }
 
 .card .point {
-    z-index: 0;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    font-size: 20pt;
-    color: #f5a542;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    /* background-color: #000a; */
-    border-radius: 20px;
-    width: 30px;
-    height: 30px;
-    /* margin-left: 3px; */
-    /* margin-top: 5px; */
-    /* padding-top: 2px; */
-    /* padding-left: 1px; */
-    /* padding-right: 1px; */
+  z-index: 0;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 20pt;
+  color: #f5a542;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  /* background-color: #000a; */
+  border-radius: 20px;
+  width: 30px;
+  height: 30px;
+  /* margin-left: 3px; */
+  /* margin-top: 5px; */
+  /* padding-top: 2px; */
+  /* padding-left: 1px; */
+  /* padding-right: 1px; */
 }
 .card .point:before {
-    z-index: -1;
-    position: absolute;
-    content: "";
-    display: block;
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-    /* top: -3px; */
-    /* left: 0px; */
-    background-color: #000a;
-    /* background-color: #c0c0c0; */
-    /* box-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
-  }
+  z-index: -1;
+  position: absolute;
+  content: "";
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  /* top: -3px; */
+  /* left: 0px; */
+  background-color: #000a;
+  /* background-color: #c0c0c0; */
+  /* box-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+}
 .card .amount {
-    z-index: 0;
-    position: absolute;
-    bottom: 0;
-    font-size: 22pt;
-    right: 5px;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    color: white;
-    -webkit-text-stroke-width: 1px;
+  z-index: 0;
+  position: absolute;
+  bottom: 0;
+  font-size: 22pt;
+  right: 5px;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
+  -webkit-text-stroke-width: 1px;
 }
 .card .desc {
-    position: absolute;
-    background: #000000aa;
-    color: white;
-    padding: 10px;
-    width: 220px;
-    right: -250px;
-    top: -5px;
-    z-index: 999;
+  position: absolute;
+  background: #000000aa;
+  color: white;
+  padding: 10px;
+  width: 220px;
+  right: -250px;
+  top: -5px;
+  z-index: 999;
 }
 .card:hover .tooltip {
-    display: block;
+  display: block;
 }
 
-.tooltip , tooltip {
-    display: none;
-    background:tomato;
-    margin-left: 28px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1000;
-    width:200px;
-    height:300px;
+.tooltip,
+tooltip {
+  display: none;
+  background: tomato;
+  margin-left: 28px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1000;
+  width: 200px;
+  height: 300px;
 }
 tooltip-body {
-    width: 400px;
-    height: 300px;    
-    display: flex;
-    flex-direction: row;
+  width: 400px;
+  height: 300px;
+  display: flex;
+  flex-direction: row;
 }
-tooltip-body .item{
-    width: 50%;
-    height: 100%;
+tooltip-body .item {
+  width: 50%;
+  height: 100%;
 }
 
-tooltip-body .text{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-color: #222;
-    background-size: 100% 100%;
-    color: #fff;
+tooltip-body .text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #222;
+  background-size: 100% 100%;
+  color: #fff;
 }
 tooltip-body .img {
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 /* faction cover */
-.tribe-faction { background-image:url('img/faction-cover/min/tribe-faction.png'); }
-.nature-faction { background-image:url('img/faction-cover/min/nature-faction.png'); }
-.death-faction { background-image:url('img/faction-cover/min/death-faction.png'); }
-.opponent-leader-portrait { background-image:url('img/leader/boy_200.png'); }
-.player-leader-portrait { background-image:url('img/leader/white_200.png'); }
+.tribe-faction {
+  background-image: url("img/faction-cover/min/tribe-faction.png");
+}
+.nature-faction {
+  background-image: url("img/faction-cover/min/nature-faction.png");
+}
+.death-faction {
+  background-image: url("img/faction-cover/min/death-faction.png");
+}
+.opponent-leader-portrait {
+  background-image: url("img/leader/boy_200.png");
+}
+.player-leader-portrait {
+  background-image: url("img/leader/white_200.png");
+}
 
 /* mouse event */
 .card:hover {
-    cursor: pointer;
-    box-shadow: 0 0 40px #fff;
+  cursor: pointer;
+  box-shadow: 0 0 40px #fff;
 }
 
-hr.double-line{
-    border-top: 1px solid #800000;
+hr.double-line {
+  border-top: 1px solid #800000;
 }
